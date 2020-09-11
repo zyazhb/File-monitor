@@ -6,7 +6,7 @@ import (
 	"github.com/fsnotify/fsnotify"
 )
 
-func inotify(filename string) {
+func inotify(filenames []string) {
 	watcher, err := fsnotify.NewWatcher()
 	if err != nil {
 		log.Fatal(err)
@@ -21,22 +21,34 @@ func inotify(filename string) {
 				if !ok {
 					return
 				}
-				log.Println("event:", event)
+				log.Println("[*]event:", event)
 				if event.Op&fsnotify.Write == fsnotify.Write {
-					log.Println("modified file:", event.Name)
+					log.Println("[*]modified file:", event.Name)
 				}
 			case err, ok := <-watcher.Errors:
 				if !ok {
 					return
 				}
-				log.Println("error:", err)
+				log.Println("[-]error:", err)
 			}
 		}
 	}()
 
-	err = watcher.Add(filename)
-	if err != nil {
-		log.Fatal(err)
+	for _, filename := range filenames {
+		log.Printf("[+]Add watcher: " + filename)
+		err = watcher.Add(filename)
+		if err != nil {
+			log.Fatal(err)
+		}
+		<-done
 	}
-	<-done
+
+}
+
+func inotifyForDir(dir string) {
+	filenames, err := GetAllFile(dir)
+	if err != nil {
+		log.Print("[-]Error: ", err)
+	}
+	inotify(filenames)
 }

@@ -1,11 +1,11 @@
 package main
 
 import (
-	"fmt"
 	"io/ioutil"
+	"log"
 )
 
-// GetAllFile 1
+// GetAllFile 获取目录中所有文件
 func GetAllFile(pathname string) ([]string, error) {
 	filenames := []string{}
 
@@ -16,10 +16,11 @@ func GetAllFile(pathname string) ([]string, error) {
 
 	for _, fi := range rd {
 		if fi.IsDir() {
-			fmt.Printf("[%s]\n", pathname+"\\"+fi.Name())
+			log.Printf("[%s]\n", pathname+"\\"+fi.Name())
 			GetAllFile(pathname + fi.Name() + "\\")
 		} else {
-			filenames = append(filenames, fi.Name())
+			log.Printf("[+]Find file: " + pathname + fi.Name())
+			filenames = append(filenames, pathname+fi.Name())
 		}
 	}
 	return filenames, nil
