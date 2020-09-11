@@ -1,10 +1,10 @@
 package main
 
-import(
+import (
 	"log"
+
 	"github.com/fsnotify/fsnotify"
 )
-
 
 func inotify(filename string) {
 	watcher, err := fsnotify.NewWatcher()
