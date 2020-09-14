@@ -40,8 +40,8 @@ func inotify(filenames []string) {
 		if err != nil {
 			log.Fatal(err)
 		}
-		<-done
 	}
+	<-done
 
 }
 
