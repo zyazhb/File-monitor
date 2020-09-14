@@ -11,6 +11,7 @@ var (
 
 	f   string
 	dir string
+	daemon bool
 )
 
 //初始化参数
@@ -18,6 +19,7 @@ func init() {
 	flag.BoolVar(&h, "h", false, "this help")
 	flag.StringVar(&f, "f", "", "choose a file to monitor")
 	flag.StringVar(&dir, "dir", "", "choose a dir to monitor")
+	flag.BoolVar(&daemon, "daemon", false, "Start in daemon mode")
 }
 
 func main() {
@@ -37,6 +39,8 @@ func main() {
 	case len(dir) != 0:
 		log.Print("[+]Start dirwalk: " + dir)
 		inotifyForDir(dir)
+	case daemon:
+		rpcreport()
 	}
 	flag.Usage()
 }
