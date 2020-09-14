@@ -41,6 +41,7 @@ func main() {
 		inotifyForDir(dir)
 	case daemon:
 		rpcreport()
+		return
 	}
 	flag.Usage()
 }

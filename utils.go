@@ -33,11 +33,12 @@ func rpcreport(){
 		panic(err.Error())
 	}
 	
-	var resp *float32 //返回值
+	var resp *string //返回值
 	err = client.Call("MonitorServer.ReportEvent", "test message", &resp)
 	if err != nil {
 		panic(err.Error())
 	}
+	log.Println(*resp)
 }
 
 

@@ -7,10 +7,11 @@ import (
 	"net/http"
 )
 
+//MonitorServer uncomment
 type MonitorServer struct{
 }
 //ReportEvent 该方法向外暴露ReportEvent
-func (mu *MonitorServer) ReportEvent(message string, resp *string) error {
+func (ms *MonitorServer) ReportEvent(message string, resp *string) error {
 	log.Println(message)
 	*resp = message
 	return nil //返回类型
@@ -36,6 +37,6 @@ func main(){
 		panic(err.Error())
 	}
 	log.Println("Server up")
-	go http.Serve(listen, nil)
+	http.Serve(listen, nil)
 	log.Println("Server down")
 }
