@@ -105,6 +105,8 @@ func main(){
 		ReadTimeout:  15 * time.Second,
 	}
 
+
+	DbInit()
 	go RpcServer()
 	log.Fatal(srv.ListenAndServe())
 }
