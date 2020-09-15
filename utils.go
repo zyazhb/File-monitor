@@ -3,6 +3,7 @@ package main
 import (
 	"io/ioutil"
 	"log"
+	"net/rpc"
 )
 
 // GetAllFile 获取目录中所有文件
@@ -25,6 +26,22 @@ func GetAllFile(pathname string) ([]string, error) {
 	}
 	return filenames, nil
 }
+
+func rpcreport(){
+	client, err := rpc.DialHTTP("tcp", "localhost:8081")
+	if err != nil {
+		panic(err.Error())
+	}
+	
+	var resp *string //返回值
+	err = client.Call("MonitorServer.ReportEvent", "test message", &resp)
+	if err != nil {
+		panic(err.Error())
+	}
+	log.Println(*resp)
+}
+
+
 
 // func printlog(info string, data string, err error) {
 // 	errexist := value.(err)
