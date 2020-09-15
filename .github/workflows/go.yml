@@ -34,7 +34,7 @@ jobs:
       run: go build -v .
       
     - name: Build:server
-      run: cd ./server && go build -v ./server
+      run: cd ./server && go build -v .
 
 #     - name: Test
 #       run: go test -v .
