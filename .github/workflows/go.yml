@@ -30,11 +30,14 @@ jobs:
             dep ensure
         fi
 
-    - name: Build
+    - name: Build:agent
       run: go build -v .
+      
+    - name: Build:server
+      run: go build -v ./server
 
-    - name: Test
-      run: go test -v .
+#     - name: Test
+#       run: go test -v .
       
     # Artifact
     - name: Download agent
