@@ -5,6 +5,9 @@ import (
 	"net/rpc"
 	"log"
 	"net/http"
+	"time"
+
+	"github.com/gorilla/mux"
 )
 
 //MonitorServer uncomment
@@ -18,7 +21,7 @@ func (ms *MonitorServer) ReportEvent(message string, resp *string) error {
 }
 
 
-func main(){
+func RpcServer(){
 	//1、初始化指针数据类型
 	MonitorServer := new(MonitorServer) //初始化指针数据类型
 
@@ -39,4 +42,27 @@ func main(){
 	log.Println("Server up")
 	http.Serve(listen, nil)
 	log.Println("Server down")
+}
+
+func RpcHandler(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+    w.WriteHeader(http.StatusOK)
+    log.Println(w, "Category: %v\n", vars["category"])
+}
+
+func main(){
+	router := mux.NewRouter()
+	router.HandleFunc("/rpc/{key}", RpcHandler)
+    router.PathPrefix("/")
+
+	srv := &http.Server{
+		Handler: router,
+		Addr:    "127.0.0.1:8000",
+		// Good practice: enforce timeouts for servers you create!
+		WriteTimeout: 15 * time.Second,
+		ReadTimeout:  15 * time.Second,
+	}
+
+	go RpcServer()
+	log.Fatal(srv.ListenAndServe())
 }
