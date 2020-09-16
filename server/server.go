@@ -20,6 +20,13 @@ func IndexHandler(c *gin.Context) {
 	})
 }
 
+func LoginHandler(c *gin.Context) {
+	c.HTML(http.StatusOK, "login.html", gin.H{
+		"static_js": "/js",
+		"static_css": "/css",
+	})
+}
+
 
 
 func main(){
@@ -28,7 +35,13 @@ func main(){
 
 	router := gin.Default()
 	router.LoadHTMLGlob("static/templates/*")
+	router.StaticFS("/js", http.Dir("static/js"))
+	router.StaticFS("/css", http.Dir("static/css"))
+
 	router.GET("/", IndexHandler)
+
+	router.GET("/login", LoginHandler)
+
 
 	router.GET("/rpc/:key", RpcHandler)
 
