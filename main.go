@@ -40,7 +40,7 @@ func main() {
 		log.Print("[+]Start dirwalk: " + dir)
 		inotifyForDir(dir)
 	case daemon:
-		rpcreport()
+		rpcreport("aaa")
 		return
 	}
 	flag.Usage()

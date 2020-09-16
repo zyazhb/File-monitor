@@ -22,6 +22,7 @@ func inotify(filenames []string) {
 					return
 				}
 				log.Println("[*]event:", event)
+				rpcreport(event.String())
 				if event.Op&fsnotify.Write == fsnotify.Write {
 					log.Println("[*]modified file:", event.Name)
 				}

@@ -27,14 +27,13 @@ func GetAllFile(pathname string) ([]string, error) {
 	return filenames, nil
 }
 
-func rpcreport(){
-	client, err := rpc.DialHTTP("tcp", "localhost:8081")
-	if err != nil {
-		panic(err.Error())
-	}
-	
+var client, err = rpc.DialHTTP("tcp", "localhost:8081")
+// if err != nil {
+// 	panic(err.Error())
+// }
+func rpcreport(eventMessage string){
 	var resp *string //返回值
-	err = client.Call("MonitorServer.ReportEvent", "test message", &resp)
+	err = client.Call("MonitorServer.ReportEvent", eventMessage, &resp)
 	if err != nil {
 		panic(err.Error())
 	}
