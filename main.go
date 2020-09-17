@@ -30,6 +30,8 @@ func main() {
 		return
 	}
 
+	rpcconnect()
+
 	switch {
 	case len(f) != 0:
 		log.Print("[+]Watching file: " + f)
@@ -40,7 +42,7 @@ func main() {
 		log.Print("[+]Start dirwalk: " + dir)
 		inotifyForDir(dir)
 	case daemon:
-		rpcreport("aaa")
+		// rpcreport("aaa")
 		return
 	}
 	flag.Usage()

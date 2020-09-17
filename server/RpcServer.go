@@ -1,24 +1,29 @@
 package main
 
 import (
+	"main/protocol"
+
+	"log"
 	"net"
 	"net/http"
 	"net/rpc"
-	"log"
 )
+
+var _CAN_CANCEL chan bool
 
 //MonitorServer uncomment
 type MonitorServer struct{
 }
 //ReportEvent 该方法向外暴露ReportEvent
-func (ms *MonitorServer) ReportEvent(message string, resp *string) error {
-	log.Println(message)
-	*resp = message
+func (ms *MonitorServer) ReportEvent(event *protocol.ReportEvent, resp *string) error {
+	log.Println(event.FileName, event.FileEvent)
+	log.Printf("%x\n",event.FileHash)
+	*resp = event.FileName
 	return nil //返回类型
 }
 
-
-func RpcServer(){
+// RPCServer Rpc服务端
+func RPCServer(){
 	//1、初始化指针数据类型
 	MonitorServer := new(MonitorServer) //初始化指针数据类型
 
@@ -32,7 +37,7 @@ func RpcServer(){
 	rpc.HandleHTTP()
 
 	//4、在特定的端口进行监听
-	listen, err := net.Listen("tcp", ":8081")
+	listen, err := net.Listen("tcp", ":8083")
 	if err != nil {
 		panic(err.Error())
 	}
@@ -40,7 +45,3 @@ func RpcServer(){
 	http.Serve(listen, nil)
 	log.Println("Server down")
 }
-
-
-
-

@@ -1,7 +1,10 @@
 package main
 
 import (
+	"crypto/sha256"
+	"io"
 	"log"
+	"os"
 
 	"github.com/fsnotify/fsnotify"
 )
@@ -13,6 +16,8 @@ func inotify(filenames []string) {
 	}
 	defer watcher.Close()
 
+	var filehash = new([]byte)
+
 	done := make(chan bool)
 	go func() {
 		for {
@@ -22,7 +27,9 @@ func inotify(filenames []string) {
 					return
 				}
 				log.Println("[*]event:", event)
-				rpcreport(event.String())
+				*filehash = calcHash(event.Name)
+				rpcreport(event, *filehash)
+
 				if event.Op&fsnotify.Write == fsnotify.Write {
 					log.Println("[*]modified file:", event.Name)
 				}
@@ -52,4 +59,20 @@ func inotifyForDir(dir string) {
 		log.Print("[-]Error: ", err)
 	}
 	inotify(filenames)
+}
+
+func calcHash(filename string) []byte {
+	file, err := os.Open(filename)
+	defer file.Close()
+	if err != nil {
+		log.Println("文件读取失败！")
+	}
+
+	hash := sha256.New()
+	if _, err := io.Copy(hash, file); err != nil {
+		log.Fatalln(err)
+	}
+	sum := hash.Sum(nil)
+
+	return sum
 }
