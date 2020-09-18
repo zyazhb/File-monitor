@@ -32,8 +32,8 @@ func ManagerHandler(c *gin.Context) {
 	c.HTML(http.StatusOK, "manager.html", nil)
 }
 
-//NotFoundHandler 404页面
-func NotFoundHandler(c *gin.Context) {
+//NotFoundHandle 404页面
+func NotFoundHandle(c *gin.Context) {
 	c.HTML(http.StatusOK, "404.html", nil)
 }
 
@@ -55,6 +55,7 @@ func main() {
 	router.GET("/manager", ManagerHandler)
 	router.GET("/rpc/:key", RPCHandler)
 
+	router.NoRoute(NotFoundHandle)
 	router.GET("/ping", func(c *gin.Context) {
 		c.JSON(200, gin.H{
 			"message": "pong",
