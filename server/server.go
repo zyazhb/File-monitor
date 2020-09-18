@@ -40,8 +40,7 @@ func NotFoundHandle(c *gin.Context) {
 func main() {
 	//初始化数据库
 	DbInit()
-	//并发Rpc服务器
-	go RpcServer()
+	go RPCServer()
 
 	// 初始化Gin
 	router := gin.Default()

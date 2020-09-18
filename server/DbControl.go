@@ -6,13 +6,14 @@ import (
     _ "github.com/mattn/go-sqlite3"
 )
 
+//DbInit 初始化Db
 func DbInit() {
     log.Println("打开数据")
     db, err := sql.Open("sqlite3", "./foo.db")
     checkErr(err)
 
     log.Println("生成数据表")
-    SqlTable := `
+    SQLTable := `
 CREATE TABLE IF NOT EXISTS "userinfo" (
    "uid" INTEGER PRIMARY KEY AUTOINCREMENT,
    "username" VARCHAR(64) NULL,
@@ -26,7 +27,7 @@ CREATE TABLE IF NOT EXISTS "userdeatail" (
    PRIMARY KEY (uid)
 );
    `
-    db.Exec(SqlTable)
+    db.Exec(SQLTable)
 
     //插入数据
     log.Print("插入数据, ID=")
