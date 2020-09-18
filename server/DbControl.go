@@ -2,7 +2,8 @@ package main
 
 import (
     "database/sql"
-    "log"
+	"log"
+	
     _ "github.com/mattn/go-sqlite3"
 )
 
@@ -13,13 +14,21 @@ func DbInit() {
     checkErr(err)
 
     log.Println("生成数据表")
-    SQLTable := `
+	SQLTable := `
+CREATE TABLE IF NOT EXISTS "users" (
+   "uid" INTEGER PRIMARY KEY AUTOINCREMENT,
+   "username" VARCHAR(64) NULL,
+   "password" VARCHAR(64) NULL,
+   "created" TIMESTAMP default (datetime('now', 'localtime'))  
+);
+
 CREATE TABLE IF NOT EXISTS "userinfo" (
    "uid" INTEGER PRIMARY KEY AUTOINCREMENT,
    "username" VARCHAR(64) NULL,
    "departname" VARCHAR(64) NULL,
    "created" TIMESTAMP default (datetime('now', 'localtime'))  
 );
+
 CREATE TABLE IF NOT EXISTS "userdeatail" (
    "uid" INT(10) NULL,
    "intro" TEXT NULL,
@@ -28,7 +37,13 @@ CREATE TABLE IF NOT EXISTS "userdeatail" (
 );
    `
     db.Exec(SQLTable)
+}
 
+//DbInsert 增加数据
+func DbInsert(){
+	db, err := sql.Open("sqlite3", "./foo.db")
+	checkErr(err)
+	
     //插入数据
     log.Print("插入数据, ID=")
     stmt, err := db.Prepare("INSERT INTO userinfo(username, departname)  values(?, ?)")
