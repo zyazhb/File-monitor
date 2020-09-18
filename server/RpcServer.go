@@ -9,7 +9,6 @@ import (
 	"net/rpc"
 )
 
-var _CAN_CANCEL chan bool
 
 //MonitorServer uncomment
 type MonitorServer struct{
