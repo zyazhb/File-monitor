@@ -1,4 +1,4 @@
 # File-monitor
-![img](https://api.travis-ci.com/zyazhb/File-monitor.svg?token=7AHugMyyp2gSqz2binDJ&branch=master&status=unknown)  
+[![img](https://www.codefactor.io/Content/badges/APlus.svg)](https://www.codefactor.io/repository/github/zyazhb/file-monitor/issues)
 
 A file monitor in golang.
