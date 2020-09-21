@@ -31,7 +31,7 @@ jobs:
         fi
 
     - name: Build:agent
-      run: go build -v .
+      run: cd ./agent && go build -v .
       
     - name: Build:server
       run: cd ./server && go build -v .
@@ -44,7 +44,7 @@ jobs:
       uses: actions/upload-artifact@v2.1.4
       with:
         name: agent
-        path: main
+        path: agent/agent
         
     - name: Download server
       uses: actions/upload-artifact@v2.1.4
