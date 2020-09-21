@@ -1,7 +1,7 @@
 package main
 
 import (
-	"main/protocol"
+	"protocol"
 
 	"io/ioutil"
 	"log"
@@ -12,8 +12,8 @@ import (
 )
 
 var (
-	_CLIENT *rpc.Client
-	_RPC_MSG chan *rpc.Call
+	_CLIENT     *rpc.Client
+	_RPC_MSG    chan *rpc.Call
 	_CAN_CANCEL chan bool
 )
 
@@ -43,7 +43,6 @@ func GetAllFile(pathname string) ([]string, error) {
 	return filenames, nil
 }
 
-
 // rpcconnect 连接rpc服务端
 func rpcconnect() {
 	client, err := rpc.DialHTTP("tcp", "localhost:8083")
@@ -69,7 +68,7 @@ func rpcReconnect() bool {
 }
 
 // rpcreport 上报日志信息
-func rpcreport(event fsnotify.Event, filehash []byte){
+func rpcreport(event fsnotify.Event, filehash []byte) {
 	// var resp *string //返回值
 	// err := client.Call(, event, &resp)
 	// if err != nil {

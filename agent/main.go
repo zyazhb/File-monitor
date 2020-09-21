@@ -9,8 +9,8 @@ import (
 var (
 	h bool
 
-	f   string
-	dir string
+	f      string
+	dir    string
 	daemon bool
 )
 

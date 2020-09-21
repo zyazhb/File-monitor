@@ -1,7 +1,7 @@
 package main
 
 import (
-	"main/protocol"
+	"protocol"
 
 	"log"
 	"net"
@@ -9,20 +9,20 @@ import (
 	"net/rpc"
 )
 
-
 //MonitorServer uncomment
-type MonitorServer struct{
+type MonitorServer struct {
 }
+
 //ReportEvent 该方法向外暴露ReportEvent
 func (ms *MonitorServer) ReportEvent(event *protocol.ReportEvent, resp *string) error {
 	log.Println(event.FileName, event.FileEvent)
-	log.Printf("%x\n",event.FileHash)
+	log.Printf("%x\n", event.FileHash)
 	*resp = event.FileName
 	return nil //返回类型
 }
 
 // RPCServer Rpc服务端
-func RPCServer(){
+func RPCServer() {
 	//1、初始化指针数据类型
 	MonitorServer := new(MonitorServer) //初始化指针数据类型
 
