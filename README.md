@@ -4,4 +4,5 @@
 A file monitor in golang.
 
 # 开发环境
-`cp ./protocol ~/go/src/protocol`
+在`$GOROOT src`中建立protocol的软连接 一定要用绝对路径建立  
+`ln -s /xxx/protocol $GOROOT/src/protocol`
