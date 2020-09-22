@@ -7,7 +7,7 @@ const (
 
 // ReportEvent 要上传的信息
 type ReportEvent struct {
-	FileName string
+	FileName  string
 	FileEvent string
-	FileHash []byte
+	FileHash  []byte
 }
