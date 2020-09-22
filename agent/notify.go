@@ -9,7 +9,7 @@ import (
 	"github.com/fsnotify/fsnotify"
 )
 
-func inotify(filenames []string) {
+func inotify(filenames []string, hashflag bool, rpcflag bool) {
 	watcher, err := fsnotify.NewWatcher()
 	if err != nil {
 		log.Fatal(err)
@@ -27,8 +27,13 @@ func inotify(filenames []string) {
 					return
 				}
 				log.Println("[*]event:", event)
-				*filehash = calcHash(event.Name)
-				rpcreport(event, *filehash)
+
+				if hashflag {
+					*filehash = calcHash(event.Name)
+				}
+				if rpcflag {
+					rpcreport(event, *filehash)
+				}
 
 				if event.Op&fsnotify.Write == fsnotify.Write {
 					log.Println("[*]modified file:", event.Name)
@@ -53,12 +58,12 @@ func inotify(filenames []string) {
 
 }
 
-func inotifyForDir(dir string) {
+func inotifyForDir(dir string, hashflag bool, rpcflag bool) {
 	filenames, err := GetAllFile(dir)
 	if err != nil {
 		log.Print("[-]Error: ", err)
 	}
-	inotify(filenames)
+	inotify(filenames, hashflag, rpcflag)
 }
 
 func calcHash(filename string) []byte {
