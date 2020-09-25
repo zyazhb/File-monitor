@@ -152,6 +152,11 @@ void handle_events(int fd, int mount_fd)
                 printf("FAN_DELETE (file deleted):\n");
             }
 
+            if (metadata->mask == (FAN_MOVE | FAN_ONDIR))
+            {
+                printf("FAN_MOVE | FAN_ONDIR (subdirectory renamed):\n");
+            }
+
             if (metadata->mask == (FAN_CREATE | FAN_ONDIR))
             {
                 printf("FAN_CREATE | FAN_ONDIR (subdirectory created):\n");
