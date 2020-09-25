@@ -9,6 +9,7 @@
 #include <sys/fanotify.h>
 #include <unistd.h>
 #include <poll.h>
+#include <time.h>
 
 #define BUF_SIZE 256
 
@@ -41,7 +42,7 @@ int main(int argc, char *argv[])
         exit(EXIT_FAILURE);
     }
 
-    ret = fanotify_mark(fd, FAN_MARK_ADD | FAN_MARK_ONLYDIR, FAN_CREATE | FAN_ONDIR | FAN_DELETE, AT_FDCWD, argv[1]);
+    ret = fanotify_mark(fd, FAN_MARK_ADD | FAN_MARK_ONLYDIR, FAN_CREATE | FAN_ONDIR | FAN_DELETE | FAN_MOVE_SELF | FAN_MOVE, AT_FDCWD, argv[1]);
     if (ret == -1)
     {
         perror("fanotify_mark");
@@ -87,6 +88,9 @@ int main(int argc, char *argv[])
 
             if (fds[1].revents & POLLIN)
             {
+                time_t timep;
+                time(&timep);
+                printf("%s ", asctime(gmtime(&timep)));
                 handle_events(fd, mount_fd);
             }
         }
@@ -136,6 +140,11 @@ void handle_events(int fd, int mount_fd)
             if (metadata->mask == FAN_CREATE)
             {
                 printf("FAN_CREATE (file created):\n");
+            }
+
+            if (metadata->mask == FAN_MOVE)
+            {
+                printf("FAN_MOVE (file renamed):\n");
             }
 
             if (metadata->mask == FAN_DELETE)
