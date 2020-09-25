@@ -45,11 +45,11 @@ jobs:
       uses: actions/upload-artifact@v2.1.4
       with:
         name: agent
-        path: agent/agent
+        path: agent/main
         
     - name: Download server
       uses: actions/upload-artifact@v2.1.4
       with:
         name: server
-        path: server/server
+        path: server/main
           
