@@ -162,6 +162,8 @@ void handle_events(int fd, int mount_fd)
                 printf("FAN_DELETE | FAN_ONDIR (subdirectory deleted):\n");
             }
 
+            fflush(stdout); // 冲一下缓冲区
+
             event_fd = open_by_handle_at(mount_fd, file_handle, O_RDONLY); // 判断文件句柄是否被系统删除
             if (event_fd == -1)
             {
@@ -190,6 +192,7 @@ void handle_events(int fd, int mount_fd)
 
             path[path_len] = '\0';
             printf("\tDirectory '%s' has been modified.\n", path);
+            fflush(stdout);
 
             // Close associated file descriptor for this event
             close(event_fd);
