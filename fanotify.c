@@ -34,14 +34,14 @@ int main(int argc, char *argv[])
         exit(EXIT_FAILURE);
     }
 
-    fd = fanotify_init(FAN_CLASS_NOTIF | FAN_REPORT_FID, 0);
+    fd = fanotify_init(FAN_CLASS_NOTIF | FAN_REPORT_FID | FAN_NONBLOCK, 0);
     if (fd == -1)
     {
         perror("fanotify_init");
         exit(EXIT_FAILURE);
     }
 
-    ret = fanotify_mark(fd, FAN_MARK_ADD | FAN_MARK_ONLYDIR, FAN_CREATE | FAN_ONDIR, AT_FDCWD, argv[1]);
+    ret = fanotify_mark(fd, FAN_MARK_ADD | FAN_MARK_ONLYDIR, FAN_CREATE | FAN_ONDIR | FAN_DELETE, AT_FDCWD, argv[1]);
     if (ret == -1)
     {
         perror("fanotify_mark");
@@ -138,9 +138,19 @@ void handle_events(int fd, int mount_fd)
                 printf("FAN_CREATE (file created):\n");
             }
 
+            if (metadata->mask == FAN_DELETE)
+            {
+                printf("FAN_DELETE (file deleted):\n");
+            }
+
             if (metadata->mask == (FAN_CREATE | FAN_ONDIR))
             {
                 printf("FAN_CREATE | FAN_ONDIR (subdirectory created):\n");
+            }
+
+            if (metadata->mask == (FAN_DELETE | FAN_ONDIR))
+            {
+                printf("FAN_DELETE | FAN_ONDIR (subdirectory deleted):\n");
             }
 
             event_fd = open_by_handle_at(mount_fd, file_handle, O_RDONLY); // 判断文件句柄是否被系统删除
