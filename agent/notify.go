@@ -28,13 +28,6 @@ func inotify(filenames []string, hashflag bool, rpcflag bool) {
 				}
 				// log.Println("[*]event:", event)
 
-				if hashflag {
-					*filehash = calcHash(event.Name)
-				}
-				if rpcflag {
-					rpcreport(event, *filehash)
-				}
-
 				if event.Op&fsnotify.Create == fsnotify.Create {
 					log.Println("[*]Create file:", event.Name)
 				}
@@ -50,6 +43,14 @@ func inotify(filenames []string, hashflag bool, rpcflag bool) {
 				if event.Op&fsnotify.Chmod == fsnotify.Chmod {
 					log.Println("[*]Chmod file:", event.Name)
 				}
+
+				if hashflag {
+					*filehash = calcHash(event.Name)
+				}
+				if rpcflag {
+					go rpcreport(event, *filehash)
+				}
+
 			case err, ok := <-watcher.Errors:
 				if !ok {
 					return
