@@ -1,4 +1,5 @@
 # File-monitor
+[![Go](https://github.com/zyazhb/File-monitor/workflows/Go/badge.svg)](https://github.com/zyazhb/File-monitor/actions)
 [![img](https://www.codefactor.io/Content/badges/APlus.svg)](https://www.codefactor.io/repository/github/zyazhb/file-monitor/issues)
 
 A file monitor in golang.
