@@ -54,26 +54,26 @@ func inotify(filenames []string, hashflag bool, rpcflag bool) {
 }
 
 // PrintInotifyOp 显示Inotify的Op
-func PrintInotifyOp(Name string, Op fsnotify.Op){
+func PrintInotifyOp(Name string, Op fsnotify.Op) {
 	if Op&fsnotify.Create == fsnotify.Create {
-					log.Println("[*]Create file:", Name)
-				}
-				if Op&fsnotify.Remove == fsnotify.Remove {
-					log.Println("[*]Remove file:", Name)
-				}
-				if Op&fsnotify.Write == fsnotify.Write {
-					log.Println("[*]Write file:", Name)
-				}
-				if Op&fsnotify.Rename == fsnotify.Rename {
-					log.Println("[*]Rename file:", Name)
-				}
-				if Op&fsnotify.Chmod == fsnotify.Chmod {
-					log.Println("[*]Chmod file:", Name)
-				}
+		log.Println("[*]Create file:", Name)
+	}
+	if Op&fsnotify.Remove == fsnotify.Remove {
+		log.Println("[*]Remove file:", Name)
+	}
+	if Op&fsnotify.Write == fsnotify.Write {
+		log.Println("[*]Write file:", Name)
+	}
+	if Op&fsnotify.Rename == fsnotify.Rename {
+		log.Println("[*]Rename file:", Name)
+	}
+	if Op&fsnotify.Chmod == fsnotify.Chmod {
+		log.Println("[*]Chmod file:", Name)
+	}
 }
 
-func inotifyForDir(dir string, hashflag bool, rpcflag bool) {
-	filenames, err := GetAllFile(dir)
+func inotifyForDir(dir string, level int, hashflag bool, rpcflag bool) {
+	filenames, err := GetAllFile(dir, level)
 	if err != nil {
 		log.Print("[-]Error: ", err)
 	}
