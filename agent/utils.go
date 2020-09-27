@@ -1,7 +1,10 @@
 package main
 
 import (
+	"crypto/sha256"
 	"io/ioutil"
+	"io"
+	"os"
 	"log"
 )
 
@@ -24,4 +27,21 @@ func GetAllFile(pathname string) ([]string, error) {
 		}
 	}
 	return filenames, nil
+}
+
+// calcHash 计算文件sha256hash
+func calcHash(filename string) []byte {
+	file, err := os.Open(filename)
+	defer file.Close()
+	if err != nil {
+		log.Println("文件读取失败！")
+	}
+
+	hash := sha256.New()
+	if _, err := io.Copy(hash, file); err != nil {
+		log.Fatalln(err)
+	}
+	sum := hash.Sum(nil)
+
+	return sum
 }

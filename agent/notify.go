@@ -1,10 +1,7 @@
 package main
 
 import (
-	"crypto/sha256"
-	"io"
 	"log"
-	"os"
 
 	"github.com/fsnotify/fsnotify"
 )
@@ -81,20 +78,4 @@ func inotifyForDir(dir string, hashflag bool, rpcflag bool) {
 		log.Print("[-]Error: ", err)
 	}
 	inotify(filenames, hashflag, rpcflag)
-}
-
-func calcHash(filename string) []byte {
-	file, err := os.Open(filename)
-	defer file.Close()
-	if err != nil {
-		log.Println("文件读取失败！")
-	}
-
-	hash := sha256.New()
-	if _, err := io.Copy(hash, file); err != nil {
-		log.Fatalln(err)
-	}
-	sum := hash.Sum(nil)
-
-	return sum
 }
