@@ -8,7 +8,7 @@ import (
 
 )
 
-//参数名1
+//参数名
 var (
 	h        bool
 	f        string
