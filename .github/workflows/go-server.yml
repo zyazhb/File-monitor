@@ -2,8 +2,10 @@ name: Go-server
 
 on:
   push:
+    branches-ignore: [ master ]
     paths: [ server ]
   pull_request:
+    branches-ignore: [ master ]
     paths: [ server ]
 
 jobs:
