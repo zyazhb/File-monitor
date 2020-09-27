@@ -2,10 +2,8 @@ name: Go-agent
 
 on:
   push:
-    branches-ignore: [ master ]
     paths: ./agent
   pull_request:
-    branches-ignore: [ master ]
     paths: ./agent
 
 jobs:
