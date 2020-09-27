@@ -15,7 +15,6 @@ type MonitorServer struct {
 
 //ReportEvent 该方法向外暴露ReportEvent
 func (ms *MonitorServer) ReportEvent(event *protocol.ReportEvent, resp *string) error {
-	log.Println(event.FileName, event.FileEvent)
 	log.Printf("%x\n", event.FileHash)
 	*resp = event.FileName
 	return nil //返回类型

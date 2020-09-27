@@ -1,10 +1,7 @@
 package main
 
 import (
-	"crypto/sha256"
-	"io"
 	"log"
-	"os"
 
 	"github.com/fsnotify/fsnotify"
 )
@@ -26,18 +23,16 @@ func inotify(filenames []string, hashflag bool, rpcflag bool) {
 				if !ok {
 					return
 				}
-				log.Println("[*]event:", event)
+
+				PrintInotifyOp(event.Name, event.Op)
 
 				if hashflag {
 					*filehash = calcHash(event.Name)
 				}
 				if rpcflag {
-					rpcreport(event, *filehash)
+					go rpcreport(event, *filehash)
 				}
 
-				if event.Op&fsnotify.Write == fsnotify.Write {
-					log.Println("[*]modified file:", event.Name)
-				}
 			case err, ok := <-watcher.Errors:
 				if !ok {
 					return
@@ -58,26 +53,29 @@ func inotify(filenames []string, hashflag bool, rpcflag bool) {
 
 }
 
-func inotifyForDir(dir string, hashflag bool, rpcflag bool) {
-	filenames, err := GetAllFile(dir)
+// PrintInotifyOp 显示Inotify的Op
+func PrintInotifyOp(Name string, Op fsnotify.Op) {
+	if Op&fsnotify.Create == fsnotify.Create {
+		log.Println("[*]Create file:", Name)
+	}
+	if Op&fsnotify.Remove == fsnotify.Remove {
+		log.Println("[*]Remove file:", Name)
+	}
+	if Op&fsnotify.Write == fsnotify.Write {
+		log.Println("[*]Write file:", Name)
+	}
+	if Op&fsnotify.Rename == fsnotify.Rename {
+		log.Println("[*]Rename file:", Name)
+	}
+	if Op&fsnotify.Chmod == fsnotify.Chmod {
+		log.Println("[*]Chmod file:", Name)
+	}
+}
+
+func inotifyForDir(dir string, level int, hashflag bool, rpcflag bool) {
+	filenames, err := GetAllFile(dir, level)
 	if err != nil {
 		log.Print("[-]Error: ", err)
 	}
 	inotify(filenames, hashflag, rpcflag)
-}
-
-func calcHash(filename string) []byte {
-	file, err := os.Open(filename)
-	defer file.Close()
-	if err != nil {
-		log.Println("文件读取失败！")
-	}
-
-	hash := sha256.New()
-	if _, err := io.Copy(hash, file); err != nil {
-		log.Fatalln(err)
-	}
-	sum := hash.Sum(nil)
-
-	return sum
 }
