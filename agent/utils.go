@@ -4,8 +4,9 @@ import (
 	"crypto/sha256"
 	"io"
 	"io/ioutil"
-	"log"
 	"os"
+
+	"github.com/google/logger"
 )
 
 // GetAllFile 获取目录中所有文件
@@ -19,15 +20,15 @@ func GetAllFile(pathname string, level int) ([]string, error) {
 
 	for _, fi := range rd {
 		if fi.IsDir() && level > 1 {
-			log.Printf("[+]Find dir: " + pathname + fi.Name())
+			logger.Info("\033[1;32m [+]Find dir: " + pathname + fi.Name() + " \033[0m")
 			level--
 			newfilenames, err := GetAllFile(pathname+fi.Name()+"/", level)
 			if err != nil {
-				log.Print("[-]Error: ", err)
+				logger.Error("\033[1;31m [-]Error: ", err ," \033[0m")
 			}
 			filenames = append(filenames, newfilenames...)
 		} else {
-			log.Printf("[+]Find file: " + pathname + fi.Name())
+			logger.Info("\033[1;32m [+]Find file: " + pathname + fi.Name() + " \033[0m")
 			filenames = append(filenames, pathname+fi.Name())
 		}
 	}
@@ -39,12 +40,12 @@ func calcHash(filename string) []byte {
 	file, err := os.Open(filename)
 	defer file.Close()
 	if err != nil {
-		log.Println("文件读取失败！")
+		logger.Error("\033[1;31m [-]Can't read the file! \033[0m")
 	}
 
 	hash := sha256.New()
 	if _, err := io.Copy(hash, file); err != nil {
-		log.Fatalln(err)
+		logger.Fatalln(err)
 	}
 	sum := hash.Sum(nil)
 

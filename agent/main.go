@@ -2,7 +2,8 @@ package main
 
 import (
 	"flag"
-	"log"
+	"github.com/google/logger"
+	"io/ioutil"
 )
 
 //参数名
@@ -30,6 +31,7 @@ func init() {
 
 func main() {
 	flag.Parse()
+	logger.Init("LoggerExample", true, false, ioutil.Discard)
 
 	if h {
 		flag.Usage()
@@ -38,12 +40,12 @@ func main() {
 
 	switch {
 	case len(f) != 0:
-		log.Print("[+]Watching file: " + f)
+		logger.Info("\033[1;30m [*]Watching file: " + f + " \033[0m")
 		filename := []string{f}
 		inotify(filename, hashflag, rpcflag)
 
 	case len(dir) != 0:
-		log.Print("[+]Start dirwalk: " + dir)
+		logger.Info("\033[1;30m [*]Start dirwalk: " + dir + " \033[0m")
 		inotifyForDir(dir, level, hashflag, rpcflag)
 	case daemon:
 		// rpcreport("aaa")
