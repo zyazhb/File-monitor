@@ -31,13 +31,9 @@ func main() {
 	router.GET("/login", model.LoginHandler)
 	router.GET("/manager", model.ManagerHandler)
 	router.GET("/rpc/:key", model.RPCHandler)
+	router.POST("/login", model.Checkin)
 
 	router.NoRoute(model.NotFoundHandle)
-	router.GET("/ping", func(c *gin.Context) {
-		c.JSON(200, gin.H{
-			"message": "pong",
-		})
-	})
 
 	router.Run() // listen and serve on 0.0.0.0:8080 (for windows "localhost:8080")
 }
