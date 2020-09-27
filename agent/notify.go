@@ -1,6 +1,8 @@
 package main
 
 import (
+	"strings"
+
 	"github.com/fsnotify/fsnotify"
 	"github.com/google/logger"
 )
@@ -73,6 +75,9 @@ func PrintInotifyOp(Name string, Op fsnotify.Op) {
 }
 
 func inotifyForDir(dir string, level int, hashflag bool, rpcflag bool) {
+	if !strings.HasSuffix(dir, "/"){
+		dir += "/"
+	}
 	filenames, err := GetAllFile(dir, level)
 	if err != nil {
 		logger.Error("[-]Error: ", err)
