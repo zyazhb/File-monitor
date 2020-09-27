@@ -26,23 +26,8 @@ func inotify(filenames []string, hashflag bool, rpcflag bool) {
 				if !ok {
 					return
 				}
-				// log.Println("[*]event:", event)
 
-				if event.Op&fsnotify.Create == fsnotify.Create {
-					log.Println("[*]Create file:", event.Name)
-				}
-				if event.Op&fsnotify.Remove == fsnotify.Remove {
-					log.Println("[*]Remove file:", event.Name)
-				}
-				if event.Op&fsnotify.Write == fsnotify.Write {
-					log.Println("[*]Write file:", event.Name)
-				}
-				if event.Op&fsnotify.Rename == fsnotify.Rename {
-					log.Println("[*]Rename file:", event.Name)
-				}
-				if event.Op&fsnotify.Chmod == fsnotify.Chmod {
-					log.Println("[*]Chmod file:", event.Name)
-				}
+				PrintInotifyOp(event.Name, event.Op)
 
 				if hashflag {
 					*filehash = calcHash(event.Name)
@@ -69,6 +54,25 @@ func inotify(filenames []string, hashflag bool, rpcflag bool) {
 	}
 	<-done
 
+}
+
+// PrintInotifyOp 显示Inotify的Op
+func PrintInotifyOp(Name string, Op fsnotify.Op){
+	if Op&fsnotify.Create == fsnotify.Create {
+					log.Println("[*]Create file:", Name)
+				}
+				if Op&fsnotify.Remove == fsnotify.Remove {
+					log.Println("[*]Remove file:", Name)
+				}
+				if Op&fsnotify.Write == fsnotify.Write {
+					log.Println("[*]Write file:", Name)
+				}
+				if Op&fsnotify.Rename == fsnotify.Rename {
+					log.Println("[*]Rename file:", Name)
+				}
+				if Op&fsnotify.Chmod == fsnotify.Chmod {
+					log.Println("[*]Chmod file:", Name)
+				}
 }
 
 func inotifyForDir(dir string, hashflag bool, rpcflag bool) {
