@@ -1,15 +1,16 @@
 package main
 
 import (
-	"log"
+	"strings"
 
 	"github.com/fsnotify/fsnotify"
+	"github.com/google/logger"
 )
 
 func inotify(filenames []string, hashflag bool, rpcflag bool) {
 	watcher, err := fsnotify.NewWatcher()
 	if err != nil {
-		log.Fatal(err)
+		logger.Fatal("\033[1;31m", err, "\033[0m")
 	}
 	defer watcher.Close()
 
@@ -37,18 +38,19 @@ func inotify(filenames []string, hashflag bool, rpcflag bool) {
 				if !ok {
 					return
 				}
-				log.Println("[-]error:", err)
+				logger.Error("\033[1;31m [-]error:", err, "\033[0m")
 			}
 		}
 	}()
 
 	for _, filename := range filenames {
-		log.Printf("[+]Add watcher: " + filename)
+		logger.Info("\033[1;32m [+]Add watcher: " + filename + " \033[0m")
 		err = watcher.Add(filename)
 		if err != nil {
-			log.Fatal(err)
+			logger.Fatal("\033[1;31m", err, "\033[0m")
 		}
 	}
+	logger.Info("\033[1;30m [*]Add watcher Done! \033[0m")
 	<-done
 
 }
@@ -56,26 +58,29 @@ func inotify(filenames []string, hashflag bool, rpcflag bool) {
 // PrintInotifyOp 显示Inotify的Op
 func PrintInotifyOp(Name string, Op fsnotify.Op) {
 	if Op&fsnotify.Create == fsnotify.Create {
-		log.Println("[*]Create file:", Name)
+		logger.Info("\033[1;33m [*]Create file:", Name, "\033[0m")
 	}
 	if Op&fsnotify.Remove == fsnotify.Remove {
-		log.Println("[*]Remove file:", Name)
+		logger.Info("\033[1;33m [*]Remove file:", Name, "\033[0m")
 	}
 	if Op&fsnotify.Write == fsnotify.Write {
-		log.Println("[*]Write file:", Name)
+		logger.Info("\033[1;33m [*]Write file:", Name, "\033[0m")
 	}
 	if Op&fsnotify.Rename == fsnotify.Rename {
-		log.Println("[*]Rename file:", Name)
+		logger.Info("\033[1;33m [*]Rename file:", Name, "\033[0m")
 	}
 	if Op&fsnotify.Chmod == fsnotify.Chmod {
-		log.Println("[*]Chmod file:", Name)
+		logger.Info("\033[1;33m [*]Chmod file:", Name, "\033[0m")
 	}
 }
 
 func inotifyForDir(dir string, level int, hashflag bool, rpcflag bool) {
+	if !strings.HasSuffix(dir, "/") {
+		dir += "/"
+	}
 	filenames, err := GetAllFile(dir, level)
 	if err != nil {
-		log.Print("[-]Error: ", err)
+		logger.Error("\033[1;31m [-]Error: ", err, " \033[0m")
 	}
 	inotify(filenames, hashflag, rpcflag)
 }
