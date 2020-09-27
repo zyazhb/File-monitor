@@ -2,8 +2,10 @@ package main
 
 import (
 	"flag"
-	"github.com/google/logger"
+	"log"
 	"io/ioutil"
+	"github.com/google/logger"
+
 )
 
 //参数名
@@ -32,6 +34,7 @@ func init() {
 func main() {
 	flag.Parse()
 	logger.Init("LoggerExample", true, false, ioutil.Discard)
+	logger.SetFlags(log.LstdFlags)
 
 	if h {
 		flag.Usage()
