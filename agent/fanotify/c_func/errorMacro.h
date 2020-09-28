@@ -1,0 +1,22 @@
+#ifndef __ERROR_MACRO_H__
+#define __ERROR_MACRO_H__
+
+// NO ERROR
+#define ERROR_NORMAL 0x00000000
+
+// System call error
+#define ERROR_WRONG_INPUT 0x00000001
+#define ERROR_OPEN 0x00000002
+#define ERROR_READ 0x00000003
+#define ERROR_READLINK 0x00000004
+#define ERROR_POLL 0x00000005
+
+// Fanotify error
+#define ERROR_FANOTIFY_INIT 0x00000010
+#define ERROR_FANOTIFY_MARK 0x00000020
+
+// Event error
+#define ERROR_EVENT_INFO_TYPE 0x00000100
+#define ERROR_OLD_EVENT_FD 0x0000200
+
+#endif
