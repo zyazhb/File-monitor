@@ -26,7 +26,7 @@ func init() {
 	flag.BoolVar(&h, "h", false, "Show this help")
 	flag.StringVar(&f, "f", "", "Choose a file to watch")
 	flag.StringVar(&dir, "dir", "", "Choose a dir to monitor")
-	flag.StringVar(&dir, "fan", "", "Choose a dir to fanotify")
+	flag.StringVar(&fan, "fan", "", "Choose a dir to fanotify")
 	flag.IntVar(&level, "level", 1, "Dir level to walk into")
 	flag.BoolVar(&daemon, "daemon", false, "Start in daemon mode")
 	flag.BoolVar(&rpcflag, "rpc", false, "Use rpc report to server")
@@ -56,7 +56,11 @@ func main() {
 
 	case len(fan) != 0:
 		logger.Info("\033[1;30m [*]Watching file: " + f + " \033[0m")
-		fanotify.Fanotify(fan)
+		msg, _ := fanotify.Fanotify(fan)
+		// if err != nil {
+		// 	logger.Error(err)D
+		// }
+		logger.Info(msg)
 
 	case daemon:
 		// rpcreport("aaa")
