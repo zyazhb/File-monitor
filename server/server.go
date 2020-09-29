@@ -4,6 +4,9 @@ import (
 	"main/model"
 	"net/http"
 
+	"github.com/gin-contrib/sessions"
+	"github.com/gin-contrib/sessions/cookie"
+
 	"github.com/gin-gonic/gin"
 )
 
@@ -21,17 +24,20 @@ func main() {
 	router.StaticFS("/css", http.Dir("static/css"))
 	router.StaticFS("/img", http.Dir("static/img"))
 
-	router.GET("/", model.IndexHandler)
-
 	UserRouter := router.Group("admin")
 	{
 		UserRouter.POST("/register", model.Register)
 		UserRouter.POST("/login", model.Login)
 	}
-	router.GET("/login", model.LoginHandler)
 	router.GET("/manager", model.ManagerHandler)
 	router.GET("/rpc/:key", model.RPCHandler)
-	router.POST("/login", model.Checkin)
+	store := cookie.NewStore([]byte("loginuser"))
+	router.Use(sessions.Sessions("sessionid", store))
+	{
+		router.GET("/", model.IndexHandler)
+		router.GET("/login", model.LoginHandler)
+		router.POST("/login", model.Checkin)
+	}
 
 	router.NoRoute(model.NotFoundHandle)
 
