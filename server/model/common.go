@@ -32,6 +32,15 @@ func LoginHandler(c *gin.Context) {
 	c.HTML(http.StatusOK, "login.html", nil)
 }
 
+//LoginOutHandler 退出登录
+func LoginOutHandler(c *gin.Context) {
+	if CheckLogin(c, false) == true {
+		session := sessions.Default(c)
+		session.Delete("loginuser")
+	}
+	c.Redirect(http.StatusMovedPermanently, "/login")
+}
+
 //Checkin 接收前端数据
 func Checkin(c *gin.Context) {
 	//接收数据
@@ -46,7 +55,7 @@ func Checkin(c *gin.Context) {
 		session.Save()
 		c.Redirect(http.StatusMovedPermanently, "/")
 	} else {
-		log.Printf("登录失败")
+		c.Redirect(http.StatusMovedPermanently, "/login")
 	}
 }
 
