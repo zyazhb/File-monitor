@@ -24,13 +24,9 @@ func main() {
 	router.StaticFS("/css", http.Dir("static/css"))
 	router.StaticFS("/img", http.Dir("static/img"))
 
-	UserRouter := router.Group("admin")
-	{
-		UserRouter.POST("/register", model.Register)
-		UserRouter.POST("/login", model.Login)
-	}
 	router.GET("/manager", model.ManagerHandler)
 	router.GET("/rpc/:key", model.RPCHandler)
+	router.GET("/register", model.Register)
 	store := cookie.NewStore([]byte("loginuser"))
 	router.Use(sessions.Sessions("sessionid", store))
 	{

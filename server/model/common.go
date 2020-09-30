@@ -51,14 +51,6 @@ func Checkin(c *gin.Context) {
 		session.Set("loginuser", email)
 		session.Save()
 		c.Redirect(http.StatusMovedPermanently, "/")
-		//设置cookie
-		// cookie, err := c.Cookie("gin_cookie")
-		// if err != nil {
-		// 	cookie = "NotSet"
-		// 	c.SetCookie("gin_cookie", "test", 3600, "/", "localhost", false, true)
-		// } else {
-		// 	log.Println("cookie value: ", cookie)
-		// }
 	} else {
 		log.Printf("登录失败")
 	}
@@ -67,6 +59,11 @@ func Checkin(c *gin.Context) {
 //ManagerHandler 控制台
 func ManagerHandler(c *gin.Context) {
 	c.HTML(http.StatusOK, "manager.html", nil)
+}
+
+//Register 注册页
+func Register(c *gin.Context) {
+	c.HTML(http.StatusOK, "register.html", nil)
 }
 
 //NotFoundHandle 404页面
