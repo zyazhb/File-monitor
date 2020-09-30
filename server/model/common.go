@@ -19,23 +19,17 @@ func RPCHandler(c *gin.Context) {
 
 //IndexHandler 首页
 func IndexHandler(c *gin.Context) {
-	islogin := GetSession(c)
-	if islogin == true {
-		c.HTML(http.StatusOK, "index.html", nil)
-	} else {
-		c.Redirect(http.StatusMovedPermanently, "/login")
-	}
+	CheckLogin(c, true)
+	c.HTML(http.StatusOK, "index.html", nil)
 }
 
 //LoginHandler 登录页
 func LoginHandler(c *gin.Context) {
-	islogin := GetSession(c)
-	log.Println("islogin", islogin)
-	if islogin == false {
-		c.HTML(http.StatusOK, "login.html", nil)
-	} else {
+	if CheckLogin(c, false) == true {
 		log.Println("你已经登录了")
+		c.Redirect(http.StatusMovedPermanently, "/")
 	}
+	c.HTML(http.StatusOK, "login.html", nil)
 }
 
 //Checkin 接收前端数据
@@ -58,6 +52,7 @@ func Checkin(c *gin.Context) {
 
 //ManagerHandler 控制台
 func ManagerHandler(c *gin.Context) {
+	CheckLogin(c, true)
 	c.HTML(http.StatusOK, "manager.html", nil)
 }
 
@@ -69,15 +64,4 @@ func Register(c *gin.Context) {
 //NotFoundHandle 404页面
 func NotFoundHandle(c *gin.Context) {
 	c.HTML(http.StatusOK, "404.html", nil)
-}
-
-//GetSession 路由获取session判断是否登录
-func GetSession(c *gin.Context) bool {
-	session := sessions.Default(c)
-	loginuser := session.Get("loginuser")
-	log.Println("loginuser:", loginuser)
-	if loginuser != nil {
-		return true
-	}
-	return false
 }
