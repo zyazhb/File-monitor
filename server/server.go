@@ -32,6 +32,7 @@ func main() {
 		router.GET("/register", model.Register)
 		router.GET("/login", model.LoginHandler)
 		router.POST("/login", model.Checkin)
+		router.GET("/logout", model.LoginOutHandler)
 		router.GET("/manager", model.ManagerHandler)
 		router.POST("/register", model.RegisterForm)
 	}
