@@ -33,6 +33,7 @@ func main() {
 		router.GET("/login", model.LoginHandler)
 		router.POST("/login", model.Checkin)
 		router.GET("/manager", model.ManagerHandler)
+		router.POST("/register", model.RegisterForm)
 	}
 
 	router.NoRoute(model.NotFoundHandle)

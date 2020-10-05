@@ -38,8 +38,8 @@ func Checkin(c *gin.Context) {
 	email := c.PostForm("email")
 	password := c.PostForm("password")
 	var user User
-	DbSel(&user)
-	if email == user.Email && password == user.Password {
+	id := DbSel(&user, email, password)
+	if id > 0 {
 		//邮箱和密码验证成功之后设置session
 		session := sessions.Default(c)
 		session.Set("loginuser", email)
@@ -58,7 +58,23 @@ func ManagerHandler(c *gin.Context) {
 
 //Register 注册页
 func Register(c *gin.Context) {
+	if CheckLogin(c, false) == true {
+		log.Println("你已经登录了")
+		c.Redirect(http.StatusMovedPermanently, "/")
+	}
 	c.HTML(http.StatusOK, "register.html", nil)
+}
+
+//RegisterForm 接收注册数据
+func RegisterForm(c *gin.Context) {
+	email := c.PostForm("email")
+	password := c.PostForm("password")
+	repassword := c.PostForm("repassword")
+	if password == repassword {
+		DbInsert(email, password)
+	} else {
+		log.Println("两次输入的密码不匹配")
+	}
 }
 
 //NotFoundHandle 404页面
