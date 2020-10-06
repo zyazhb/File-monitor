@@ -27,18 +27,19 @@ func IndexHandler(c *gin.Context) {
 func LoginHandler(c *gin.Context) {
 	if CheckLogin(c, false) == true {
 		log.Println("你已经登录了")
-		c.Redirect(http.StatusMovedPermanently, "/")
+		c.Redirect(http.StatusFound, "/")
 	}
 	c.HTML(http.StatusOK, "login.html", nil)
 }
 
-//LoginOutHandler 退出登录
-func LoginOutHandler(c *gin.Context) {
+//LogoutHandler 退出登录
+func LogoutHandler(c *gin.Context) {
 	if CheckLogin(c, false) == true {
 		session := sessions.Default(c)
 		session.Delete("loginuser")
+		session.Save()
 	}
-	c.Redirect(http.StatusMovedPermanently, "/login")
+	c.Redirect(http.StatusFound, "/login")
 }
 
 //Checkin 接收前端数据
@@ -53,9 +54,9 @@ func Checkin(c *gin.Context) {
 		session := sessions.Default(c)
 		session.Set("loginuser", email)
 		session.Save()
-		c.Redirect(http.StatusMovedPermanently, "/")
+		c.Redirect(http.StatusFound, "/")
 	} else {
-		c.Redirect(http.StatusMovedPermanently, "/login")
+		c.Redirect(http.StatusFound, "/login")
 	}
 }
 
@@ -69,7 +70,7 @@ func ManagerHandler(c *gin.Context) {
 func Register(c *gin.Context) {
 	if CheckLogin(c, false) == true {
 		log.Println("你已经登录了")
-		c.Redirect(http.StatusMovedPermanently, "/")
+		c.Redirect(http.StatusFound, "/")
 	}
 	c.HTML(http.StatusOK, "register.html", nil)
 }
@@ -81,8 +82,10 @@ func RegisterForm(c *gin.Context) {
 	repassword := c.PostForm("repassword")
 	if password == repassword {
 		DbInsert(email, password)
+		c.Redirect(http.StatusFound, "/login")
 	} else {
 		log.Println("两次输入的密码不匹配")
+		c.Redirect(http.StatusFound, "/register")
 	}
 }
 

@@ -30,11 +30,11 @@ func main() {
 	{
 		router.GET("/", model.IndexHandler)
 		router.GET("/register", model.Register)
+		router.POST("/register", model.RegisterForm)
 		router.GET("/login", model.LoginHandler)
 		router.POST("/login", model.Checkin)
-		router.GET("/logout", model.LoginOutHandler)
+		router.GET("/logout", model.LogoutHandler)
 		router.GET("/manager", model.ManagerHandler)
-		router.POST("/register", model.RegisterForm)
 	}
 
 	router.NoRoute(model.NotFoundHandle)
