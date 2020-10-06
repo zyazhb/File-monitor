@@ -23,7 +23,7 @@ func CheckLogin(c *gin.Context, RedirectFlag bool) bool {
 	islogin := GetSession(c)
 	if islogin == false {
 		if RedirectFlag == true {
-			c.Redirect(http.StatusMovedPermanently, "/login")
+			c.Redirect(http.StatusFound, "/login")
 		}
 		return false
 	}
