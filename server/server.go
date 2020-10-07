@@ -24,15 +24,17 @@ func main() {
 	router.StaticFS("/css", http.Dir("static/css"))
 	router.StaticFS("/img", http.Dir("static/img"))
 
-	router.GET("/manager", model.ManagerHandler)
 	router.GET("/rpc/:key", model.RPCHandler)
-	router.GET("/register", model.Register)
 	store := cookie.NewStore([]byte("loginuser"))
 	router.Use(sessions.Sessions("sessionid", store))
 	{
 		router.GET("/", model.IndexHandler)
+		router.GET("/register", model.Register)
+		router.POST("/register", model.RegisterForm)
 		router.GET("/login", model.LoginHandler)
 		router.POST("/login", model.Checkin)
+		router.GET("/logout", model.LogoutHandler)
+		router.GET("/manager", model.ManagerHandler)
 	}
 
 	router.NoRoute(model.NotFoundHandle)

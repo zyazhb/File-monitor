@@ -19,23 +19,27 @@ func RPCHandler(c *gin.Context) {
 
 //IndexHandler 首页
 func IndexHandler(c *gin.Context) {
-	islogin := GetSession(c)
-	if islogin == true {
-		c.HTML(http.StatusOK, "index.html", nil)
-	} else {
-		c.Redirect(http.StatusMovedPermanently, "/login")
-	}
+	CheckLogin(c, true)
+	c.HTML(http.StatusOK, "index.html", nil)
 }
 
 //LoginHandler 登录页
 func LoginHandler(c *gin.Context) {
-	islogin := GetSession(c)
-	log.Println("islogin", islogin)
-	if islogin == false {
-		c.HTML(http.StatusOK, "login.html", nil)
-	} else {
+	if CheckLogin(c, false) == true {
 		log.Println("你已经登录了")
+		c.Redirect(http.StatusFound, "/")
 	}
+	c.HTML(http.StatusOK, "login.html", nil)
+}
+
+//LogoutHandler 退出登录
+func LogoutHandler(c *gin.Context) {
+	if CheckLogin(c, false) == true {
+		session := sessions.Default(c)
+		session.Delete("loginuser")
+		session.Save()
+	}
+	c.Redirect(http.StatusFound, "/login")
 }
 
 //Checkin 接收前端数据
@@ -44,40 +48,48 @@ func Checkin(c *gin.Context) {
 	email := c.PostForm("email")
 	password := c.PostForm("password")
 	var user User
-	DbSel(&user)
-	if email == user.Email && password == user.Password {
+	id := DbSel(&user, email, password)
+	if id > 0 {
 		//邮箱和密码验证成功之后设置session
 		session := sessions.Default(c)
 		session.Set("loginuser", email)
 		session.Save()
-		c.Redirect(http.StatusMovedPermanently, "/")
+		c.Redirect(http.StatusFound, "/")
 	} else {
-		log.Printf("登录失败")
+		c.Redirect(http.StatusFound, "/login")
 	}
 }
 
 //ManagerHandler 控制台
 func ManagerHandler(c *gin.Context) {
+	CheckLogin(c, true)
 	c.HTML(http.StatusOK, "manager.html", nil)
 }
 
 //Register 注册页
 func Register(c *gin.Context) {
+	if CheckLogin(c, false) == true {
+		log.Println("你已经登录了")
+		c.Redirect(http.StatusFound, "/")
+	}
 	c.HTML(http.StatusOK, "register.html", nil)
+}
+
+//RegisterForm 接收注册数据
+func RegisterForm(c *gin.Context) {
+	email := c.PostForm("email")
+	password := c.PostForm("password")
+	repassword := c.PostForm("repassword")
+	if password == repassword {
+		DbInsert(email, password)
+		c.Redirect(http.StatusFound, "/login")
+	} else {
+		log.Println("两次输入的密码不匹配")
+		c.Redirect(http.StatusFound, "/register")
+	}
 }
 
 //NotFoundHandle 404页面
 func NotFoundHandle(c *gin.Context) {
 	c.HTML(http.StatusOK, "404.html", nil)
-}
-
-//GetSession 路由获取session判断是否登录
-func GetSession(c *gin.Context) bool {
-	session := sessions.Default(c)
-	loginuser := session.Get("loginuser")
-	log.Println("loginuser:", loginuser)
-	if loginuser != nil {
-		return true
-	}
-	return false
 }
