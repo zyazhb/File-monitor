@@ -81,10 +81,11 @@ func RegisterForm(c *gin.Context) {
 	password := c.PostForm("password")
 	repassword := c.PostForm("repassword")
 	if password == repassword {
-		DbInsert(email, password)
-		if http.StatusFound != 200 {
-			//邮箱已被注册
+		err := DbInsert(email, password)
+		if err != nil {
 			c.Redirect(http.StatusFound, "/register")
+		} else {
+			c.Redirect(http.StatusFound, "/login")
 		}
 	} else {
 		//留给js写弹窗 两次密码不匹配
