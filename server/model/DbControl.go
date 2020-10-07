@@ -1,7 +1,6 @@
 package model
 
 import (
-	"log"
 	"time"
 
 	"gorm.io/driver/sqlite"
@@ -39,7 +38,6 @@ func DbSel(u *User, email, pass string) int {
 		panic(err)
 	}
 	db.Select("uid").Where("email=? AND password=?", email, pass).Find(u)
-	log.Println("", u.UID)
 	return u.UID
 }
 
@@ -53,10 +51,7 @@ func DbInsert(email string, pass string) {
 	db.Last(&user)
 	lastid := user.UID
 	newid := lastid + 1
-	log.Println("", lastid)
 	currentTime := time.Now().Format("2006-01-02 15:04:05")
 	u := User{newid, email, pass, 1, currentTime}
 	db.Create(&u)
-	log.Println("", u.Password)
-	log.Println("", u.Email)
 }

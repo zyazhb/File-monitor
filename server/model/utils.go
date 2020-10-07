@@ -11,7 +11,6 @@ import (
 func GetSession(c *gin.Context) bool {
 	session := sessions.Default(c)
 	loginuser := session.Get("loginuser")
-	// log.Println("loginuser:", loginuser)
 	if loginuser != nil {
 		return true
 	}
