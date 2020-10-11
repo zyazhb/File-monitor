@@ -57,7 +57,7 @@ func Checkin(c *gin.Context) {
 		session.Save()
 		c.Redirect(http.StatusFound, "/manager")
 	} else {
-		c.Redirect(http.StatusMovedPermanently, "/login")
+		c.Redirect(http.StatusFound, "/login")
 	}
 }
 
@@ -70,7 +70,7 @@ func ManagerHandler(c *gin.Context) {
 //Register 注册页
 func Register(c *gin.Context) {
 	if CheckLogin(c, false) == true {
-		c.Redirect(http.StatusMovedPermanently, "/")
+		c.Redirect(http.StatusFound, "/")
 	}
 	c.HTML(http.StatusOK, "register.html", nil)
 }
@@ -82,8 +82,13 @@ func RegisterForm(c *gin.Context) {
 	repassword := c.PostForm("repassword")
 	if password == repassword {
 		DbInsert(email, password)
+		if http.StatusFound != 200 {
+			//邮箱已被注册
+			c.Redirect(http.StatusFound, "/register")
+		}
 	} else {
 		//留给js写弹窗 两次密码不匹配
+		c.Redirect(http.StatusFound, "/register")
 	}
 }
 
