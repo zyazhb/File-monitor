@@ -42,7 +42,7 @@ func DbSel(u *User, email, pass string) int {
 }
 
 //DbInsert 注册插入数据
-func DbInsert(email string, pass string) {
+func DbInsert(email string, pass string) error {
 	db, err := gorm.Open(sqlite.Open("./foo.db"), &gorm.Config{})
 	if err != nil {
 		panic(err)
@@ -53,5 +53,6 @@ func DbInsert(email string, pass string) {
 	newid := lastid + 1
 	currentTime := time.Now().Format("2006-01-02 15:04:05")
 	u := User{newid, email, pass, 1, currentTime}
-	db.Create(&u)
+	res := db.Create(&u)
+	return res.Error
 }
