@@ -19,15 +19,16 @@ func RPCHandler(c *gin.Context) {
 
 //IndexHandler 首页
 func IndexHandler(c *gin.Context) {
-	CheckLogin(c, true)
-	c.HTML(http.StatusOK, "index.html", nil)
+	if CheckLogin(c, false) == true {
+		c.Redirect(http.StatusFound, "/manager")
+	}
+	c.Redirect(http.StatusFound, "/login")
 }
 
 //LoginHandler 登录页
 func LoginHandler(c *gin.Context) {
 	if CheckLogin(c, false) == true {
-		log.Println("你已经登录了")
-		c.Redirect(http.StatusFound, "/")
+		c.Redirect(http.StatusFound, "/manager")
 	}
 	c.HTML(http.StatusOK, "login.html", nil)
 }
@@ -54,9 +55,9 @@ func Checkin(c *gin.Context) {
 		session := sessions.Default(c)
 		session.Set("loginuser", email)
 		session.Save()
-		c.Redirect(http.StatusFound, "/")
+		c.Redirect(http.StatusFound, "/manager")
 	} else {
-		c.Redirect(http.StatusFound, "/login")
+		c.Redirect(http.StatusMovedPermanently, "/login")
 	}
 }
 
@@ -69,8 +70,7 @@ func ManagerHandler(c *gin.Context) {
 //Register 注册页
 func Register(c *gin.Context) {
 	if CheckLogin(c, false) == true {
-		log.Println("你已经登录了")
-		c.Redirect(http.StatusFound, "/")
+		c.Redirect(http.StatusMovedPermanently, "/")
 	}
 	c.HTML(http.StatusOK, "register.html", nil)
 }
@@ -82,10 +82,8 @@ func RegisterForm(c *gin.Context) {
 	repassword := c.PostForm("repassword")
 	if password == repassword {
 		DbInsert(email, password)
-		c.Redirect(http.StatusFound, "/login")
 	} else {
-		log.Println("两次输入的密码不匹配")
-		c.Redirect(http.StatusFound, "/register")
+		//留给js写弹窗 两次密码不匹配
 	}
 }
 
