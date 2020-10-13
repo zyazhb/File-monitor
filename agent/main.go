@@ -35,6 +35,8 @@ func main() {
 	flag.Parse()
 	logger.Init("LoggerExample", true, false, ioutil.Discard)
 	logger.SetFlags(log.LstdFlags)
+	logger.SetFlags(log.Llongfile)
+
 
 	if h {
 		flag.Usage()

@@ -41,6 +41,7 @@ func calcHash(filename string) []byte {
 	defer file.Close()
 	if err != nil {
 		logger.Error("\033[1;31m [-]Can't read the file! \033[0m")
+		return nil
 	}
 
 	hash := sha256.New()
