@@ -26,8 +26,9 @@ func RPCDbInit() {
 	}
 	//迁移 schema
 	db.AutoMigrate(&RPCDb{})
-	newdb := RPCDb{0, "nil", "nil", "nil", 0}
-	db.Create(&newdb)
+	if len(RPCDbSel()) < 1 {
+		db.Create(&RPCDb{})
+	}
 }
 
 //RPCDbSel 数据查询

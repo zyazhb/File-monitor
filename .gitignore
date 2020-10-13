@@ -2,3 +2,4 @@ testdir
 main
 *.db
 .vscode
+__debug_bin
