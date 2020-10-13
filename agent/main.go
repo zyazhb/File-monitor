@@ -28,7 +28,7 @@ func init() {
 	flag.BoolVar(&daemon, "daemon", false, "Start in daemon mode")
 	flag.BoolVar(&rpcflag, "rpc", false, "Use rpc report to server")
 	flag.BoolVar(&hashflag, "hash", false, "Calculate file hash.")
-
+	
 }
 
 func main() {
