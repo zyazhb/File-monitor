@@ -1,4 +1,4 @@
 testdir
 main
-foo.db
+*.db
 .vscode

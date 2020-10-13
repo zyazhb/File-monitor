@@ -19,7 +19,7 @@ type User struct {
 //DbInit 连接数据库,表迁移
 func DbInit() {
 	//连接数据库
-	db, err := gorm.Open(sqlite.Open("./foo.db"), &gorm.Config{})
+	db, err := gorm.Open(sqlite.Open("./user.db"), &gorm.Config{})
 	if err != nil {
 		panic(err)
 	}
@@ -33,7 +33,7 @@ func DbInit() {
 //DbSel 数据查询
 func DbSel(u *User, email, pass string) int {
 	//连接数据库
-	db, err := gorm.Open(sqlite.Open("./foo.db"), &gorm.Config{})
+	db, err := gorm.Open(sqlite.Open("./user.db"), &gorm.Config{})
 	if err != nil {
 		panic(err)
 	}
@@ -43,7 +43,7 @@ func DbSel(u *User, email, pass string) int {
 
 //DbInsert 注册插入数据
 func DbInsert(email string, pass string) error {
-	db, err := gorm.Open(sqlite.Open("./foo.db"), &gorm.Config{})
+	db, err := gorm.Open(sqlite.Open("./user.db"), &gorm.Config{})
 	if err != nil {
 		panic(err)
 	}

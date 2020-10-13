@@ -67,6 +67,13 @@ func ManagerHandler(c *gin.Context) {
 	c.HTML(http.StatusOK, "manager.html", nil)
 }
 
+//GetReport 取得报告
+func GetReport(c *gin.Context) {
+	CheckLogin(c, true)
+	result := RPCDbSel()
+	c.JSON(200, result)
+}
+
 //Register 注册页
 func Register(c *gin.Context) {
 	if CheckLogin(c, false) == true {

@@ -31,13 +31,15 @@ func RPCDbInit() {
 }
 
 //RPCDbSel 数据查询
-func RPCDbSel() *gorm.DB {
+func RPCDbSel() []RPCDb {
 	//连接数据库
 	db, err := gorm.Open(sqlite.Open("./report.db"), &gorm.Config{})
 	if err != nil {
 		panic(err)
 	}
-	return db.Select("*")
+	var rpcdb []RPCDb
+	db.Find(&rpcdb)
+	return rpcdb
 }
 
 //RPCDbInsert 注册插入数据
