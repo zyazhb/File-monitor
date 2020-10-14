@@ -22,8 +22,8 @@ func init() {
 }
 
 // rpcconnect 连接rpc服务端
-func rpcconnect() {
-	client, err := rpc.DialHTTP("tcp", "localhost:8083")
+func rpcconnect(serverip string) {
+	client, err := rpc.DialHTTP("tcp", serverip)
 	if err != nil {
 		panic(err.Error())
 	}
@@ -32,8 +32,8 @@ func rpcconnect() {
 }
 
 // rpcReconnect 重新连接rpc服务端
-func rpcReconnect() bool {
-	client, err := rpc.DialHTTP("tcp", "localhost:8083")
+func rpcReconnect(serverip string) bool {
+	client, err := rpc.DialHTTP("tcp", serverip)
 	if err != nil {
 		log.Printf("ReDial RPC Server Error: %s", err)
 		return false
@@ -46,7 +46,7 @@ func rpcReconnect() bool {
 }
 
 // rpcreport 上报日志信息
-func rpcreport(event fsnotify.Event, filehash []byte) {
+func rpcreport(event fsnotify.Event, filehash string, serverip string) {
 	// var resp *string //返回值
 	// err := client.Call(, event, &resp)
 	// if err != nil {
@@ -59,7 +59,7 @@ func rpcreport(event fsnotify.Event, filehash []byte) {
 
 	if nil == _CLIENT {
 		for {
-			if rpcReconnect() {
+			if rpcReconnect(serverip) {
 				break
 			}
 

@@ -2,10 +2,10 @@ package main
 
 import (
 	"flag"
-	"log"
 	"io/ioutil"
-	"github.com/google/logger"
+	"log"
 
+	"github.com/google/logger"
 )
 
 //参数名
@@ -17,6 +17,7 @@ var (
 	daemon   bool
 	rpcflag  bool
 	hashflag bool
+	server   string
 )
 
 //初始化参数
@@ -28,7 +29,7 @@ func init() {
 	flag.BoolVar(&daemon, "daemon", false, "Start in daemon mode")
 	flag.BoolVar(&rpcflag, "rpc", false, "Use rpc report to server")
 	flag.BoolVar(&hashflag, "hash", false, "Calculate file hash.")
-	
+	flag.StringVar(&server, "server", "", "Server ip:port")
 }
 
 func main() {
@@ -36,7 +37,6 @@ func main() {
 	logger.Init("LoggerExample", true, false, ioutil.Discard)
 	logger.SetFlags(log.LstdFlags)
 	logger.SetFlags(log.Llongfile)
-
 
 	if h {
 		flag.Usage()
@@ -47,11 +47,11 @@ func main() {
 	case len(f) != 0:
 		logger.Info("\033[1;30m [*]Watching file: " + f + " \033[0m")
 		filename := []string{f}
-		inotify(filename, hashflag, rpcflag)
+		inotify(filename, hashflag, rpcflag, server)
 
 	case len(dir) != 0:
 		logger.Info("\033[1;30m [*]Start dirwalk: " + dir + " \033[0m")
-		inotifyForDir(dir, level, hashflag, rpcflag)
+		inotifyForDir(dir, level, hashflag, rpcflag, server)
 	case daemon:
 		// rpcreport("aaa")
 		return

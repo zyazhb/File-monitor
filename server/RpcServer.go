@@ -20,7 +20,7 @@ type MonitorServer struct {
 
 //ReportEvent 该方法向外暴露ReportEvent
 func (ms *MonitorServer) ReportEvent(event *protocol.ReportEvent, resp *string) error {
-	if event.FileHash != nil {
+	if event.FileHash != "" {
 		logger.Infof("\033[1;33m [*]%s hash:%x\n", event.FileName, event.FileHash)
 	}
 	logger.Infof("\033[1;33m [*]%s file:%s\033[0m", event.FileEvent, event.FileName)

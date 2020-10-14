@@ -9,5 +9,5 @@ const (
 type ReportEvent struct {
 	FileName  string
 	FileEvent string
-	FileHash  []byte
+	FileHash  string
 }
