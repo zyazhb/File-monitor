@@ -47,7 +47,8 @@ func calcHash(filename string) string {
 
 	hash := sha256.New()
 	if _, err := io.Copy(hash, file); err != nil {
-		logger.Fatalln(err)
+		logger.Error("\033[1;31m ", err, "\033[0m")
+		return "directory"
 	}
 	sum := hash.Sum(nil)
 
