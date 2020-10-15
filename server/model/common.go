@@ -74,6 +74,13 @@ func GetReport(c *gin.Context) {
 	c.JSON(200, result)
 }
 
+func DeleteReport(c *gin.Context) {
+	CheckLogin(c, true)
+	rid := c.Param("rid")
+	RPCDbDel(rid)
+	// c.JSON(200, result)
+}
+
 //Register 注册页
 func Register(c *gin.Context) {
 	if CheckLogin(c, false) == true {

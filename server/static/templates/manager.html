@@ -120,12 +120,12 @@
 
         <!-- <canvas class="my-4 w-100" id="myChart" width="900" height="380"></canvas> -->
         <h2>Record</h2>
-          <a href="javascript:void(0)" class="btn" style="background-color: grey;">Button</a>
-          <select class="custom-select w-50" id="setInterval" required="">
-            <option value="3">3</option>
-            <option value="2">2</option>
-            <option value="1">1</option>
-          </select>
+        <a href="javascript:void(0)" class="btn" style="background-color: grey;">Button</a>
+        <select class="custom-select w-50" id="setInterval" required="">
+          <option value="3">3</option>
+          <option value="2">2</option>
+          <option value="1">1</option>
+        </select>
 
         <script>
           $(function () {
@@ -157,13 +157,20 @@
                       "<td>" + data[index].Operation + "</td>" +
                       "<td>" + data[index].Createtime + "</td>" +
                       "<td>" + data[index].Hash + "</td>" +
-                      "<td><a href='_blank"  + "'>Delete</a></td>" +
+                      "<td><a href='javascript:deleterpt(" + data[index].RID + ")'>Delete</a></td>" +
                       "</tr>");
                   })
                 }
               })
             }
           })
+
+          function deleterpt(rid) {
+            $.ajax({
+              type: "get",
+              url: "/delete/" + rid,
+            })
+          }
         </script>
         <div class="table-responsive">
           <table class="table table-striped table-sm" style="text-align:center">
