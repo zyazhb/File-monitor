@@ -7,7 +7,7 @@ import (
 	"github.com/google/logger"
 )
 
-func inotify(filenames []string, hashflag bool, rpcflag bool, serverip string) {
+func inotify(filenames []string, hashflag bool, serverip string) {
 	watcher, err := fsnotify.NewWatcher()
 	if err != nil {
 		logger.Fatal("\033[1;31m", err, "\033[0m")
@@ -23,14 +23,14 @@ func inotify(filenames []string, hashflag bool, rpcflag bool, serverip string) {
 					return
 				}
 
-				PrintInotifyOp(event.Name, event.Op)
+				PrintInotifyOp(event.Name, event.Op) //agent回显
 
 				var filehash string
 				if hashflag {
-					filehash = calcHash(event.Name)
+					filehash = calcHash(event.Name) //计算hash
 				}
-				if rpcflag {
-					go rpcreport(event, filehash, serverip)
+				if serverip != "" {
+					go rpcreport(event, filehash, serverip) //rpc上报
 				}
 
 			case err, ok := <-watcher.Errors:
@@ -73,7 +73,7 @@ func PrintInotifyOp(Name string, Op fsnotify.Op) {
 	}
 }
 
-func inotifyForDir(dir string, level int, hashflag bool, rpcflag bool, serverip string) {
+func inotifyForDir(dir string, level int, hashflag bool, serverip string) {
 	if !strings.HasSuffix(dir, "/") {
 		dir += "/"
 	}
@@ -81,5 +81,5 @@ func inotifyForDir(dir string, level int, hashflag bool, rpcflag bool, serverip 
 	if err != nil {
 		logger.Error("\033[1;31m [-]Error: ", err, " \033[0m")
 	}
-	inotify(filenames, hashflag, rpcflag, serverip)
+	inotify(filenames, hashflag, serverip)
 }
