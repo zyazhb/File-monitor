@@ -11,14 +11,14 @@ import (
 )
 
 var (
-	_CLIENT     *rpc.Client
-	_RPC_MSG    chan *rpc.Call
-	_CAN_CANCEL chan bool
+	_Client    *rpc.Client
+	_RpcMsg    chan *rpc.Call
+	_CanCancel chan bool
 )
 
 func init() {
-	_RPC_MSG = make(chan *rpc.Call, 1024)
-	_CAN_CANCEL = make(chan bool)
+	_RpcMsg = make(chan *rpc.Call, 1024)
+	_CanCancel = make(chan bool)
 }
 
 // rpcconnect 连接rpc服务端
@@ -28,7 +28,7 @@ func rpcconnect(serverip string) {
 		panic(err.Error())
 	}
 
-	_CLIENT = client
+	_Client = client
 }
 
 // rpcReconnect 重新连接rpc服务端
@@ -39,7 +39,7 @@ func rpcReconnect(serverip string) bool {
 		return false
 	}
 
-	_CLIENT = client
+	_Client = client
 	log.Printf("ReDial RPC Server Sucess")
 
 	return true
@@ -57,7 +57,7 @@ func rpcreport(event fsnotify.Event, filehash string, serverip string) {
 	var resp string
 	args := protocol.ReportEvent{FileName: event.Name, FileEvent: event.Op.String(), FileHash: filehash}
 
-	if nil == _CLIENT {
+	if nil == _Client {
 		for {
 			if rpcReconnect(serverip) {
 				break
@@ -67,13 +67,13 @@ func rpcreport(event fsnotify.Event, filehash string, serverip string) {
 		}
 	}
 
-	_CLIENT.Call(protocol.RPCReportEvent, args, &resp)
+	_Client.Call(protocol.RPCReportEvent, args, &resp)
 }
 
 // func loop() {
 // 	for {
 // 		select {
-// 		case rpcMsg, ok := <- _RPC_MSG:
+// 		case rpcMsg, ok := <- _RpcMsg:
 // 			if !ok {
 // 				log.Println("Rpc Call error!")
 // 			}

@@ -10,11 +10,10 @@ import (
 
 //参数名
 var (
-	h        bool
-	f        string
-	dir      string
-	level    int
-	daemon   bool
+	h     bool
+	f     string
+	dir   string
+	level int
 	rpcflag  bool
 	hashflag bool
 	server   string
@@ -26,10 +25,9 @@ func init() {
 	flag.StringVar(&f, "f", "", "Choose a file to watch")
 	flag.StringVar(&dir, "dir", "", "Choose a dir to monitor")
 	flag.IntVar(&level, "level", 1, "Dir level to walk into")
-	flag.BoolVar(&daemon, "daemon", false, "Start in daemon mode")
 	flag.BoolVar(&rpcflag, "rpc", false, "Use rpc report to server")
 	flag.BoolVar(&hashflag, "hash", false, "Calculate file hash.")
-	flag.StringVar(&server, "server", "", "Server ip:port")
+	flag.StringVar(&server, "server", "localhost:8083", "Server ip:port")
 }
 
 func main() {
@@ -52,9 +50,6 @@ func main() {
 	case len(dir) != 0:
 		logger.Info("\033[1;30m [*]Start dirwalk: " + dir + " \033[0m")
 		inotifyForDir(dir, level, hashflag, rpcflag, server)
-	case daemon:
-		// rpcreport("aaa")
-		return
 	}
 	flag.Usage()
 }

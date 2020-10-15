@@ -25,7 +25,7 @@ func GetAllFile(pathname string, level int) ([]string, error) {
 			level--
 			newfilenames, err := GetAllFile(pathname+fi.Name()+"/", level)
 			if err != nil {
-				logger.Error("\033[1;31m [-]Error: ", err ," \033[0m")
+				logger.Error("\033[1;31m [-]Error: ", err, " \033[0m")
 			}
 			filenames = append(filenames, newfilenames...)
 		} else {
