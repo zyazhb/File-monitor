@@ -21,8 +21,8 @@ func emptyPoller(fd int) *fdPoller {
 	return poller
 }
 
-// Create a new inotify poller.
-// This creates an inotify handler, and an epoll handler.
+// Create a new fanotify poller.
+// This creates an fanotify handler, and an epoll handler.
 func newFdPoller(fd int) (*fdPoller, error) {
 	var errno error
 	poller := emptyPoller(fd)
@@ -44,7 +44,7 @@ func newFdPoller(fd int) (*fdPoller, error) {
 		return nil, errno
 	}
 
-	// Register inotify fd with epoll
+	// Register fanotify fd with epoll
 	event := unix.EpollEvent{
 		Fd:     int32(poller.fd),
 		Events: unix.EPOLLIN,
@@ -120,7 +120,7 @@ func (poller *fdPoller) wait() (bool, error) {
 				if event.Events&unix.EPOLLERR != 0 {
 					// If an error is waiting on the pipe file descriptor.
 					// This is an absolute mystery, and should never ever happen.
-					return false, errors.New("Error on the pipe descriptor.")
+					return false, errors.New("error on the pipe descriptor")
 				}
 				if event.Events&unix.EPOLLIN != 0 {
 					// This is a regular wakeup, so we have to clear the buffer.

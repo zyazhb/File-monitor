@@ -12,19 +12,20 @@ package module
 // #include <unistd.h>
 // #include <poll.h>
 // #include <time.h>
-import "C" 
+import "C"
 import (
-    "fmt"
-	"os"
-	"io"
 	"bufio"
-    "unsafe"
+	"fmt"
+	"io"
+	"os"
+	"unsafe"
 )
 
+// NotifyFD ...
 type NotifyFD struct {
 	Fd   int
 	File *os.File
-	Rd io.Reader
+	Rd   io.Reader
 }
 
 func initFanotify(fanotifyFlags uint, openFlags uint) (*NotifyFD, error) {
@@ -36,35 +37,34 @@ func initFanotify(fanotifyFlags uint, openFlags uint) (*NotifyFD, error) {
 	rd := bufio.NewReader(file)
 
 	return &NotifyFD{
-		Fd: int(fd),
+		Fd:   int(fd),
 		File: file,
-		Rd: rd,
+		Rd:   rd,
 	}, nil
 }
 
+// Mark ....
 func Mark(handle *NotifyFD, flags uint, mask uint64, dirFd int, path string) error {
-	ret, err := C.fanotify_mark(C.int(handle.Fd), C.uint(flags), C.uint64_t(mask), C.int(dirFd), C.CString(path)) 
+	ret, err := C.fanotify_mark(C.int(handle.Fd), C.uint(flags), C.uint64_t(mask), C.int(dirFd), C.CString(path))
 	if ret == -1 {
 		return fmt.Errorf("fanotify: mark error %w", err)
 	}
 	return nil
 }
 
-
-
 // func initPoll(count uint32, pipeId ...chan string) (int, error) {
 func initPoll(fd int) (int, error) {
 	var fds [2]C.struct_pollfd
 
 	fds[0].fd = C.STDIN_FILENO
-    fds[0].events = C.POLLIN
+	fds[0].events = C.POLLIN
 
-    fds[1].fd = C.int(fd)
-    fds[1].events = C.POLLIN
+	fds[1].fd = C.int(fd)
+	fds[1].events = C.POLLIN
 
 	pollNum, err := C.poll((*C.struct_pollfd)(unsafe.Pointer(&fds)), 2, -1)
 	if pollNum == -1 {
 		return -1, fmt.Errorf("fanotify: mark error %w", err)
 	}
-	return pollNum, nil
+	return int(pollNum), nil
 }
