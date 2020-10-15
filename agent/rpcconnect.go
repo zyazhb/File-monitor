@@ -11,69 +11,52 @@ import (
 )
 
 var (
-	_CLIENT     *rpc.Client
-	_RPC_MSG    chan *rpc.Call
-	_CAN_CANCEL chan bool
+	_Client    *rpc.Client
+	_RpcMsg    chan *rpc.Call
+	_CanCancel chan bool
 )
 
 func init() {
-	_RPC_MSG = make(chan *rpc.Call, 1024)
-	_CAN_CANCEL = make(chan bool)
-}
-
-// rpcconnect 连接rpc服务端
-func rpcconnect() {
-	client, err := rpc.DialHTTP("tcp", "localhost:8083")
-	if err != nil {
-		panic(err.Error())
-	}
-
-	_CLIENT = client
-}
-
-// rpcReconnect 重新连接rpc服务端
-func rpcReconnect() bool {
-	client, err := rpc.DialHTTP("tcp", "localhost:8083")
-	if err != nil {
-		log.Printf("ReDial RPC Server Error: %s", err)
-		return false
-	}
-
-	_CLIENT = client
-	log.Printf("ReDial RPC Server Sucess")
-
-	return true
+	_RpcMsg = make(chan *rpc.Call, 1024)
+	_CanCancel = make(chan bool)
 }
 
 // rpcreport 上报日志信息
-func rpcreport(event fsnotify.Event, filehash []byte) {
-	// var resp *string //返回值
-	// err := client.Call(, event, &resp)
-	// if err != nil {
-	// 	panic(err.Error())
-	// }
-	// log.Println(*resp)
-
+func rpcreport(event fsnotify.Event, filehash string, serverip string) {
 	var resp string
 	args := protocol.ReportEvent{FileName: event.Name, FileEvent: event.Op.String(), FileHash: filehash}
 
-	if nil == _CLIENT {
+	if nil == _Client {
 		for {
-			if rpcReconnect() {
+			if rpcReconnect(serverip) {
 				break
 			}
 
 			time.Sleep(5000 * time.Millisecond)
 		}
 	}
+	_Client.Call(protocol.RPCReportEvent, args, &resp)
+	_Client = nil
+}
 
-	_CLIENT.Call(protocol.RPCReportEvent, args, &resp)
+// rpcReconnect 重新连接rpc服务端
+func rpcReconnect(serverip string) bool {
+	client, err := rpc.DialHTTP("tcp", serverip)
+	if err != nil {
+		log.Printf("ReDial RPC Server Error: %s", err)
+		return false
+	}
+
+	_Client = client
+	log.Printf("ReDial RPC Server Sucess")
+
+	return true
 }
 
 // func loop() {
 // 	for {
 // 		select {
-// 		case rpcMsg, ok := <- _RPC_MSG:
+// 		case rpcMsg, ok := <- _RpcMsg:
 // 			if !ok {
 // 				log.Println("Rpc Call error!")
 // 			}

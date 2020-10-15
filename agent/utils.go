@@ -2,6 +2,7 @@ package main
 
 import (
 	"crypto/sha256"
+	"encoding/hex"
 	"io"
 	"io/ioutil"
 	"os"
@@ -24,7 +25,7 @@ func GetAllFile(pathname string, level int) ([]string, error) {
 			level--
 			newfilenames, err := GetAllFile(pathname+fi.Name()+"/", level)
 			if err != nil {
-				logger.Error("\033[1;31m [-]Error: ", err ," \033[0m")
+				logger.Error("\033[1;31m [-]Error: ", err, " \033[0m")
 			}
 			filenames = append(filenames, newfilenames...)
 		} else {
@@ -36,12 +37,12 @@ func GetAllFile(pathname string, level int) ([]string, error) {
 }
 
 // calcHash 计算文件sha256hash
-func calcHash(filename string) []byte {
+func calcHash(filename string) string {
 	file, err := os.Open(filename)
 	defer file.Close()
 	if err != nil {
 		logger.Error("\033[1;31m [-]Can't read the file! \033[0m")
-		return nil
+		return ""
 	}
 
 	hash := sha256.New()
@@ -50,5 +51,5 @@ func calcHash(filename string) []byte {
 	}
 	sum := hash.Sum(nil)
 
-	return sum
+	return string(hex.EncodeToString(sum))
 }

@@ -1,7 +1,6 @@
 package model
 
 import (
-	"fmt"
 	"time"
 
 	"gorm.io/driver/sqlite"
@@ -14,7 +13,7 @@ type RPCDb struct {
 	FileName   string
 	Operation  string
 	Createtime string
-	Hash       int
+	Hash       string
 }
 
 //RPCDbInit 连接数据库,表迁移
@@ -44,7 +43,7 @@ func RPCDbSel() []RPCDb {
 }
 
 //RPCDbInsert 注册插入数据
-func RPCDbInsert(filename string, operation string, hash []byte) error {
+func RPCDbInsert(filename string, operation string, hash string) error {
 	db, err := gorm.Open(sqlite.Open("./report.db"), &gorm.Config{})
 	if err != nil {
 		panic(err)
@@ -54,8 +53,7 @@ func RPCDbInsert(filename string, operation string, hash []byte) error {
 	lastid := rpcdb.RID
 	newid := lastid + 1
 	currentTime := time.Now().Format("2006-01-02 15:04:05")
-	hashf, err := fmt.Printf("%x", hash)
-	newreport := RPCDb{newid, filename, operation, currentTime, hashf}
+	newreport := RPCDb{newid, filename, operation, currentTime, hash}
 	res := db.Create(&newreport)
 	return res.Error
 }
