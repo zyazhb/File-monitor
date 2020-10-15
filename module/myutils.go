@@ -51,6 +51,7 @@ func Mark(handle *NotifyFD, flags uint, mask uint64, dirFd int, path string) err
 }
 
 
+
 // func initPoll(count uint32, pipeId ...chan string) (int, error) {
 func initPoll(fd int) (int, error) {
 	var fds [2]C.struct_pollfd
@@ -63,7 +64,7 @@ func initPoll(fd int) (int, error) {
 
 	pollNum, err := C.poll((*C.struct_pollfd)(unsafe.Pointer(&fds)), 2, -1)
 	if pollNum == -1 {
-		return _, fmt.Errorf("fanotify: mark error %w", err)
+		return -1, fmt.Errorf("fanotify: mark error %w", err)
 	}
 	return pollNum, nil
 }
