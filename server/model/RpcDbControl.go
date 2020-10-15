@@ -38,7 +38,7 @@ func RPCDbSel() []RPCDb {
 		panic(err)
 	}
 	var rpcdb []RPCDb
-	db.Find(&rpcdb)
+	db.Order("r_id desc").Find(&rpcdb)
 	return rpcdb
 }
 
