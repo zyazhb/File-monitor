@@ -38,8 +38,18 @@ func RPCDbSel() []RPCDb {
 		panic(err)
 	}
 	var rpcdb []RPCDb
-	db.Find(&rpcdb)
+	db.Order("r_id desc").Find(&rpcdb)
 	return rpcdb
+}
+
+//RPCDbDel 数据删除
+func RPCDbDel(rid string) {
+	//连接数据库
+	db, err := gorm.Open(sqlite.Open("./report.db"), &gorm.Config{})
+	if err != nil {
+		panic(err)
+	}
+	db.Where("r_id=?", rid).Delete(RPCDb{})
 }
 
 //RPCDbInsert 注册插入数据

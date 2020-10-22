@@ -10,10 +10,10 @@ import (
 
 //参数名
 var (
-	h     bool
-	f     string
-	dir   string
-	level int
+	h        bool
+	f        string
+	dir      string
+	level    int
 	rpcflag  bool
 	hashflag bool
 	server   string

@@ -18,7 +18,7 @@ func GetAllFile(pathname string, level int) ([]string, error) {
 	if err != nil {
 		return filenames, err
 	}
-
+	filenames = append(filenames, pathname)
 	for _, fi := range rd {
 		if fi.IsDir() && level > 1 {
 			logger.Info("\033[1;32m [+]Find dir: " + pathname + fi.Name() + " \033[0m")
@@ -47,7 +47,8 @@ func calcHash(filename string) string {
 
 	hash := sha256.New()
 	if _, err := io.Copy(hash, file); err != nil {
-		logger.Fatalln(err)
+		logger.Error("\033[1;31m ", err, "\033[0m")
+		return "directory"
 	}
 	sum := hash.Sum(nil)
 
