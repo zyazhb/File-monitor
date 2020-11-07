@@ -84,6 +84,19 @@ func DeleteReport(c *gin.Context) {
 	})
 }
 
+//UserManager 取得所有用户信息
+func UserManager(c *gin.Context) {
+	CheckLogin(c, true)
+	c.HTML(http.StatusOK, "usermanager.html", nil)
+}
+
+//UserManage 取得所有用户信息
+func UserManage(c *gin.Context) {
+	CheckLogin(c, true)
+	result := AllUserInfo()
+	c.JSON(200, result)
+}
+
 //Register 注册页
 func Register(c *gin.Context) {
 	if CheckLogin(c, false) == true {

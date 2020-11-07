@@ -41,6 +41,18 @@ func DbSel(u *User, email, pass string) int {
 	return u.UID
 }
 
+//AllUserInfo 全部用户信息
+func AllUserInfo() []User {
+	//连接数据库
+	db, err := gorm.Open(sqlite.Open("./user.db"), &gorm.Config{})
+	if err != nil {
+		panic(err)
+	}
+	var userdb []User
+	db.Order("UID").Find(&userdb)
+	return userdb
+}
+
 //DbInsert 注册插入数据
 func DbInsert(email string, pass string) error {
 	db, err := gorm.Open(sqlite.Open("./user.db"), &gorm.Config{})

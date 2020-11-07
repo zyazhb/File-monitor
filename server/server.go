@@ -37,6 +37,8 @@ func main() {
 		router.GET("/manager", model.ManagerHandler)
 		router.GET("/getresult", model.GetReport)
 		router.GET("/delete/:rid", model.DeleteReport)
+		router.GET("/usermanager", model.UserManager)
+		router.GET("/getalluser", model.UserManage)
 	}
 
 	router.NoRoute(model.NotFoundHandle)
