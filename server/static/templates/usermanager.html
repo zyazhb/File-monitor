@@ -129,7 +129,8 @@
 
         <script>
           $(function () {
-            interval = setInterval(flush, $("select").val() * 1000);
+            flush();
+            // interval = setInterval(flush, $("select").val() * 1000);
 
             $("select[id='setInterval']").click(function () {
               clearInterval(interval);
