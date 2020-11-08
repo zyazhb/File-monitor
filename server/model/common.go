@@ -84,7 +84,7 @@ func DeleteReport(c *gin.Context) {
 	})
 }
 
-//UserManager 取得所有用户信息
+//UserManager 用户管理器页面
 func UserManager(c *gin.Context) {
 	CheckLogin(c, true)
 	c.HTML(http.StatusOK, "usermanager.html", nil)
@@ -95,6 +95,12 @@ func UserManage(c *gin.Context) {
 	CheckLogin(c, true)
 	result := AllUserInfo()
 	c.JSON(200, result)
+}
+
+//showinfo 展示可修改信息
+func ShowInfo(c *gin.Context) {
+	CheckLogin(c, true)
+	c.HTML(http.StatusOK, "showinfo.html", nil)
 }
 
 //Register 注册页

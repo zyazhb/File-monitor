@@ -23,6 +23,7 @@ func main() {
 	router.StaticFS("/js", http.Dir("static/js"))
 	router.StaticFS("/css", http.Dir("static/css"))
 	router.StaticFS("/img", http.Dir("static/img"))
+	router.StaticFS("/include", http.Dir("static/include"))
 
 	router.GET("/rpc/:key", model.RPCHandler)
 	store := cookie.NewStore([]byte("loginuser"))
@@ -39,6 +40,7 @@ func main() {
 		router.GET("/delete/:rid", model.DeleteReport)
 		router.GET("/usermanager", model.UserManager)
 		router.GET("/getalluser", model.UserManage)
+		router.GET("/showinfo", model.ShowInfo)
 	}
 
 	router.NoRoute(model.NotFoundHandle)
