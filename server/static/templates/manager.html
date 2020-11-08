@@ -3,15 +3,13 @@
 
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <meta name="description" content="">
-  <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
-  <meta name="generator" content="Jekyll v4.0.1">
   <title>Manage</title>
 
   <!-- Bootstrap core CSS -->
   <link rel="stylesheet" href="/css/bootstrap.css">
   <script type="text/javascript" src="/js/jquery-3.5.1.min.js"></script>
+  <script src="/js/bootstrap.js"></script>
+  <script src="/js/bootstrap.bundle.js"></script>
 </head>
 
 <body>
@@ -19,14 +17,6 @@
   <div class="container-fluid">
     <div class="row">
       <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse"></nav>
-
-      <script>
-        $(function () {
-          $("#navbar").load("include/header.html");
-          $("#sidebarMenu").load("include/sidebar.html");
-        });
-      </script>
-
       <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-md-4">
         <h2>Record</h2>
         <a href="javascript:void(0)" class="btn" style="background-color: grey;">Button</a>
@@ -110,7 +100,15 @@
       </main>
     </div>
   </div>
-  <script src="/js/bootstrap.js"></script>
+  <hr class="featurette-divider">
+  <footer id="footer" class="container">
+    <script>
+      $(function () {
+        $("#navbar").load("include/header.html");
+        $("#sidebarMenu").load("include/sidebar.html");
+        $("#footer").load("include/footer.html");
+      });
+    </script>
 </body>
 
 </html>
