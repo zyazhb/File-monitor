@@ -43,17 +43,18 @@ func LogoutHandler(c *gin.Context) {
 	c.Redirect(http.StatusFound, "/login")
 }
 
-//Checkin 接收前端数据
+//Checkin 检查登录
 func Checkin(c *gin.Context) {
 	//接收数据
 	email := c.PostForm("email")
 	password := c.PostForm("password")
 	var user User
-	id := DbSel(&user, email, password)
-	if id > 0 {
+	uid, role := DbSel(&user, email, password)
+	if uid > 0 {
 		//邮箱和密码验证成功之后设置session
 		session := sessions.Default(c)
 		session.Set("loginuser", email)
+		session.Set("role", role)
 		session.Save()
 		c.Redirect(http.StatusFound, "/manager")
 	} else {
@@ -93,8 +94,14 @@ func UserManager(c *gin.Context) {
 //UserManage 取得所有用户信息
 func UserManage(c *gin.Context) {
 	CheckLogin(c, true)
-	result := AllUserInfo()
-	c.JSON(200, result)
+	session := sessions.Default(c)
+	role := session.Get("role")
+	if role == 0 {
+		result := AllUserInfo()
+		c.JSON(200, result)
+	} else {
+		c.JSON(200, gin.H{"No Access Permission": "No Access Permission"})
+	}
 }
 
 //showinfo 展示可修改信息
