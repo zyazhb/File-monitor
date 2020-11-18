@@ -8,8 +8,6 @@
   <!-- Bootstrap core CSS -->
   <link rel="stylesheet" href="/css/bootstrap.css">
   <script type="text/javascript" src="/js/jquery-3.5.1.min.js"></script>
-  <script src="/js/bootstrap.js"></script>
-  <script src="/js/bootstrap.bundle.js"></script>
 </head>
 
 <body>
@@ -29,7 +27,7 @@
         <script>
           $(function () {
             flush();
-            interval = setInterval(flush, $("select").val() * 1000);
+            // interval = setInterval(flush, $("select").val() * 1000);
 
             $("select[id='setInterval']").click(function () {
               clearInterval(interval);
@@ -43,7 +41,7 @@
               //发送请求
               $.ajax({
                 type: "get",
-                url: "/getresult",
+                url: "/getalluser",
                 // data: "id=7788",
                 dataType: "json", //表示可以跨域访问json数据
                 async: false, //锁定浏览器，只有请求处理完毕之后（回调函数调用完成之后），才能执行后面的代码
@@ -52,12 +50,12 @@
                   $.each(data, function (index) {
                     //将数据添加到表格中
                     $("table").append("<tr>" +
-                      "<td>" + data[index].RID + "</td>" +
-                      "<td>" + data[index].FileName + "</td>" +
-                      "<td>" + data[index].Operation + "</td>" +
+                      "<td>" + data[index].UID + "</td>" +
+                      "<td>" + data[index].Email + "</td>" +
+                      "<td>" + data[index].Password + "</td>" +
+                      "<td>" + data[index].Role + "</td>" +
                       "<td>" + data[index].Createtime + "</td>" +
-                      "<td>" + data[index].Hash + "</td>" +
-                      "<td><a href='javascript:deleterpt(" + data[index].RID + ")'>Delete</a></td>" +
+                      "<td><a href='javascript:edituser(" + data[index].RID + ")'>Edit</a></td>" +
                       "</tr>");
                   })
                 }
@@ -76,23 +74,21 @@
           <table class="table table-striped table-sm" style="text-align:center">
             <thead>
               <tr>
-                <th>RID</th>
-                <th>FileName</th>
-                <th>Operation</th>
-                <th>Time</th>
-                <th>Hash</th>
-                <th>Op</th>
+                <th>UID</th>
+                <th>Email</th>
+                <th>Password</th>
+                <th>Role</th>
+                <th>Createtime</th>
               </tr>
             </thead>
             <tbody>
 
               <tr id="reportlist">
-                <th id="rid">no network connection</th>
-                <th id="FileName">no network connection</th>
-                <th id="Operation">no network connection</th>
-                <th id="Time">no network connection</th>
-                <th id="Hash">no network connection</th>
-                <th id="Op">no network connection</th>
+                <th id="UID">no network connection</th>
+                <th id="Email">no network connection</th>
+                <th id="Password">no network connection</th>
+                <th id="Status">no network connection</th>
+                <th id="Createtime">no network connection</th>
               </tr>
             </tbody>
           </table>
@@ -100,6 +96,7 @@
       </main>
     </div>
   </div>
+  <script src="/js/bootstrap.js"></script>
   <hr class="featurette-divider">
   <footer id="footer" class="container">
     <script>
