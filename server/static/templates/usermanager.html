@@ -53,9 +53,9 @@
                       "<td>" + data[index].UID + "</td>" +
                       "<td>" + data[index].Email + "</td>" +
                       "<td>" + data[index].Password + "</td>" +
-                      "<td>" + data[index].Status + "</td>" +
+                      "<td>" + data[index].Role + "</td>" +
                       "<td>" + data[index].Createtime + "</td>" +
-                      "<td><a href='javascript:deleterpt(" + data[index].RID + ")'>Delete</a></td>" +
+                      "<td><a href='javascript:edituser(" + data[index].RID + ")'>Edit</a></td>" +
                       "</tr>");
                   })
                 }
@@ -77,7 +77,7 @@
                 <th>UID</th>
                 <th>Email</th>
                 <th>Password</th>
-                <th>Status</th>
+                <th>Role</th>
                 <th>Createtime</th>
               </tr>
             </thead>

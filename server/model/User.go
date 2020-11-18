@@ -66,7 +66,8 @@ func UserManage(c *gin.Context) {
 //showinfo 展示可修改信息
 func ShowInfo(c *gin.Context) {
 	CheckLogin(c, true)
-	c.HTML(http.StatusOK, "showinfo.html", nil)
+	session := sessions.Default(c)
+	c.HTML(http.StatusOK, "showinfo.html", gin.H{"email": session.Get("loginuser"), "role": session.Get("role")})
 }
 
 //Register 注册页
