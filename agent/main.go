@@ -4,6 +4,7 @@ import (
 	"flag"
 	"io/ioutil"
 	"log"
+	"main/notify"
 
 	"github.com/google/logger"
 )
@@ -17,6 +18,7 @@ var (
 	rpcflag  bool
 	hashflag bool
 	server   string
+	fan      bool
 )
 
 //初始化参数
@@ -27,6 +29,7 @@ func init() {
 	flag.IntVar(&level, "level", 1, "Dir level to walk into")
 	flag.BoolVar(&hashflag, "hash", false, "Calculate file hash.")
 	flag.StringVar(&server, "server", "", "Use rpcreport to Server ip:port")
+	flag.BoolVar(&fan, "fan", false, "Use fanotify feature")
 }
 
 func main() {
@@ -41,14 +44,25 @@ func main() {
 	}
 
 	switch {
+	case fan:
+		logger.Info("\033[1;30m [*]Fanotify feature is on: " + f + " \033[0m")
+		logger.Info("\033[1;30m [*]Watching mountpoint: " + f + " \033[0m")
+		mountpoint := ""
+		if len(f) != 0 {
+			mountpoint = f
+		} else if len(dir) != 0 {
+			mountpoint = dir
+		}
+		notify.RunFanotify(mountpoint, hashflag, server)
+
 	case len(f) != 0:
 		logger.Info("\033[1;30m [*]Watching file: " + f + " \033[0m")
 		filename := []string{f}
-		inotify(filename, hashflag, server)
+		notify.RunInotify(filename, hashflag, server)
 
 	case len(dir) != 0:
 		logger.Info("\033[1;30m [*]Start dirwalk: " + dir + " \033[0m")
-		inotifyForDir(dir, level, hashflag, server)
+		notify.RunInotifyForDir(dir, level, hashflag, server)
 	}
 	flag.Usage()
 }

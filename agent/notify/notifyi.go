@@ -1,4 +1,4 @@
-package main
+package notify
 
 import (
 	"strings"
@@ -7,7 +7,8 @@ import (
 	"github.com/google/logger"
 )
 
-func inotify(filenames []string, hashflag bool, serverip string) {
+//RunInotify 运行Inotify
+func RunInotify(filenames []string, hashflag bool, serverip string) {
 	watcher, err := fsnotify.NewWatcher()
 	if err != nil {
 		logger.Fatal("\033[1;31m", err, "\033[0m")
@@ -73,7 +74,8 @@ func PrintInotifyOp(Name string, Op fsnotify.Op) {
 	}
 }
 
-func inotifyForDir(dir string, level int, hashflag bool, serverip string) {
+//RunInotifyForDir 递归添加Inotify
+func RunInotifyForDir(dir string, level int, hashflag bool, serverip string) {
 	if !strings.HasSuffix(dir, "/") {
 		dir += "/"
 	}
@@ -81,5 +83,5 @@ func inotifyForDir(dir string, level int, hashflag bool, serverip string) {
 	if err != nil {
 		logger.Error("\033[1;31m [-]Error: ", err, " \033[0m")
 	}
-	inotify(filenames, hashflag, serverip)
+	RunInotify(filenames, hashflag, serverip)
 }
