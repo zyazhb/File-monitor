@@ -4,42 +4,27 @@ import (
 	"fmt"
 	"log"
 	"os"
-	// "strings"
 
 	// "github.com/google/logger"
 	"github.com/s3rj1k/go-fanotify/fanotify"
 	"golang.org/x/sys/unix"
 )
 
-func RunFanotify(filenames []string, hashflag bool, serverip string) {
+//RunFanotify 运行Fanotify
+func RunFanotify(mountpoint string, hashflag bool, serverip string) {
 	// logger.SetFlags(log.Lshortfile)
 
 	notify, err := fanotify.Initialize(
-		unix.FAN_CLOEXEC|
-			unix.FAN_CLASS_NOTIF|
-			unix.FAN_UNLIMITED_QUEUE|
-			unix.FAN_UNLIMITED_MARKS,
-		os.O_RDONLY|
-			unix.O_LARGEFILE|
-			unix.O_CLOEXEC,
+		unix.FAN_CLOEXEC|unix.FAN_CLASS_NOTIF|unix.FAN_UNLIMITED_QUEUE|unix.FAN_UNLIMITED_MARKS,
+		os.O_RDONLY|unix.O_LARGEFILE|unix.O_CLOEXEC,
 	)
 	if err != nil {
 		log.Fatalf("%v\n", err)
 	}
 
-	var mountpoint string
-
-	if val, ok := os.LookupEnv("MOUNT_POINT"); !ok {
-		mountpoint = "/"
-	} else {
-		mountpoint = val
-	}
-
 	if err = notify.Mark(
-		unix.FAN_MARK_ADD|
-			unix.FAN_MARK_MOUNT,
-		unix.FAN_MODIFY|
-			unix.FAN_CLOSE_WRITE,
+		unix.FAN_MARK_ADD|unix.FAN_MARK_MOUNT,
+		unix.FAN_MODIFY|unix.FAN_CLOSE_WRITE,
 		unix.AT_FDCWD,
 		mountpoint,
 	); err != nil {
