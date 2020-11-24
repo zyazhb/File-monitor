@@ -4,6 +4,7 @@ import (
 	"flag"
 	"io/ioutil"
 	"log"
+	"main/notify"
 
 	"github.com/google/logger"
 )
@@ -44,11 +45,11 @@ func main() {
 	case len(f) != 0:
 		logger.Info("\033[1;30m [*]Watching file: " + f + " \033[0m")
 		filename := []string{f}
-		inotify(filename, hashflag, server)
+		notify.RunInotify(filename, hashflag, server)
 
 	case len(dir) != 0:
 		logger.Info("\033[1;30m [*]Start dirwalk: " + dir + " \033[0m")
-		inotifyForDir(dir, level, hashflag, server)
+		notify.RunInotifyForDir(dir, level, hashflag, server)
 	}
 	flag.Usage()
 }
