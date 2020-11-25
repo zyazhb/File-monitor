@@ -2,7 +2,6 @@ package main
 
 import (
 	"main/model"
-	"protocol"
 
 	"io/ioutil"
 	"log"
@@ -14,12 +13,24 @@ import (
 	"net/rpc"
 )
 
+const (
+	// RPCReportEvent 上报信息的方法
+	RPCReportEvent = "MonitorServer.ReportEvent"
+)
+
+//ReportEvent 传递的数据结构 一定要与agent/notify/rpcconnect统一
+type ReportEvent struct {
+	FileName  string
+	FileEvent string
+	FileHash  string
+}
+
 //MonitorServer uncomment
 type MonitorServer struct {
 }
 
 //ReportEvent 该方法向外暴露ReportEvent
-func (ms *MonitorServer) ReportEvent(event *protocol.ReportEvent, resp *string) error {
+func (ms *MonitorServer) ReportEvent(event *ReportEvent, resp *string) error {
 	if event.FileHash != "" {
 		logger.Infof("\033[1;33m [*]%s hash:%x\n", event.FileName, event.FileHash)
 	}

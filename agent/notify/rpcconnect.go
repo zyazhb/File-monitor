@@ -1,14 +1,24 @@
 package notify
 
 import (
-	"protocol"
-
 	"log"
 	"net/rpc"
 	"time"
 
 	"github.com/fsnotify/fsnotify"
 )
+
+const (
+	// RPCReportEvent 上报信息的方法
+	RPCReportEvent = "MonitorServer.ReportEvent"
+)
+
+//ReportEvent 传递的数据结构 一定要与server/rpcserver统一
+type ReportEvent struct {
+	FileName  string
+	FileEvent string
+	FileHash  string
+}
 
 var (
 	_Client    *rpc.Client
@@ -21,10 +31,11 @@ func init() {
 	_CanCancel = make(chan bool)
 }
 
-// rpcreport 上报日志信息
+//rpcreport 上报日志信息
 func rpcreport(event fsnotify.Event, filehash string, serverip string) {
 	var resp string
-	args := protocol.ReportEvent{FileName: event.Name, FileEvent: event.Op.String(), FileHash: filehash}
+	//上报内容
+	args := ReportEvent{FileName: event.Name, FileEvent: event.Op.String(), FileHash: filehash}
 
 	if nil == _Client {
 		for {
@@ -35,7 +46,7 @@ func rpcreport(event fsnotify.Event, filehash string, serverip string) {
 			time.Sleep(5000 * time.Millisecond)
 		}
 	}
-	_Client.Call(protocol.RPCReportEvent, args, &resp)
+	_Client.Call(RPCReportEvent, args, &resp)
 	_Client = nil
 }
 
