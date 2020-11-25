@@ -2,10 +2,9 @@ package notify
 
 import (
 	"fmt"
-	"log"
 	"os"
 
-	// "github.com/google/logger"
+	"github.com/google/logger"
 	"github.com/s3rj1k/go-fanotify/fanotify"
 	"golang.org/x/sys/unix"
 )
@@ -19,16 +18,16 @@ func RunFanotify(mountpoint string, hashflag bool, serverip string) {
 		os.O_RDONLY|unix.O_LARGEFILE|unix.O_CLOEXEC,
 	)
 	if err != nil {
-		log.Fatalf("%v\n", err)
+		logger.Fatal("\033[1;31m", err, "\033[0m")
 	}
-
+	//https://man7.org/linux/man-pages/man2/fanotify_mark.2.html 部分特性在kernel 5.0+才有效
 	if err = notify.Mark(
 		unix.FAN_MARK_ADD|unix.FAN_MARK_MOUNT,
-		unix.FAN_MODIFY|unix.FAN_CLOSE_WRITE,
+		unix.FAN_ACCESS|unix.FAN_MODIFY|unix.FAN_OPEN|unix.FAN_CLOSE,
 		unix.AT_FDCWD,
 		mountpoint,
 	); err != nil {
-		log.Fatalf("%v\n", err)
+		logger.Fatal("\033[1;31m", err, "\033[0m")
 	}
 
 	f := func(notify *fanotify.NotifyFD) (string, error) {
@@ -48,8 +47,25 @@ func RunFanotify(mountpoint string, hashflag bool, serverip string) {
 			return "", err
 		}
 
-		if data.MatchMask(unix.FAN_CLOSE_WRITE) || data.MatchMask(unix.FAN_MODIFY) {
-			return fmt.Sprintf("PID:%d %s", data.GetPID(), path), nil
+		switch {
+		case data.MatchMask(unix.FAN_ACCESS):
+			return fmt.Sprintf("FAN_ACCESS file: PID:%d %s", data.GetPID(), path), nil
+		case data.MatchMask(unix.FAN_OPEN):
+			return fmt.Sprintf("Open file: PID:%d %s", data.GetPID(), path), nil
+		case data.MatchMask(unix.FAN_ATTRIB):
+			return fmt.Sprintf("FAN_ATTRIB file: PID:%d %s", data.GetPID(), path), nil
+		case data.MatchMask(unix.FAN_CREATE):
+			return fmt.Sprintf("FAN_CREATE file: PID:%d %s", data.GetPID(), path), nil
+		case data.MatchMask(unix.FAN_DELETE):
+			return fmt.Sprintf("FAN_DELETE file: PID:%d %s", data.GetPID(), path), nil
+		case data.MatchMask(unix.FAN_MODIFY):
+			return fmt.Sprintf("FAN_MODIFY file: PID:%d %s", data.GetPID(), path), nil
+		case data.MatchMask(unix.FAN_CLOSE):
+			return fmt.Sprintf("FAN_CLOSE file: PID:%d %s", data.GetPID(), path), nil
+		case data.MatchMask(unix.FAN_MOVE):
+			return fmt.Sprintf("FAN_MOVE file: PID:%d %s", data.GetPID(), path), nil
+		case data.MatchMask(unix.FAN_CLOSE_WRITE):
+			return fmt.Sprintf("FAN_CLOSE_WRITE file: PID:%d %s", data.GetPID(), path), nil
 		}
 
 		return "", fmt.Errorf("fanotify: unknown event")
@@ -58,11 +74,11 @@ func RunFanotify(mountpoint string, hashflag bool, serverip string) {
 	for {
 		str, err := f(notify)
 		if err == nil && len(str) > 0 {
-			fmt.Printf("%s\n", str)
+			logger.Info("\033[1;33m [*]", str, "\033[0m")
 		}
 
 		if err != nil {
-			fmt.Printf("error: %v\n", err)
+			logger.Error("\033[1;31m [-]error:", err, "\033[0m")
 		}
 	}
 }

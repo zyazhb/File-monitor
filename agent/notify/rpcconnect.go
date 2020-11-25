@@ -31,11 +31,30 @@ func init() {
 	_CanCancel = make(chan bool)
 }
 
-//rpcreport 上报日志信息
-func rpcreport(event fsnotify.Event, filehash string, serverip string) {
+//rpcreport inotify上报日志信息
+func rpcreporti(event fsnotify.Event, filehash string, serverip string) {
 	var resp string
 	//上报内容
 	args := ReportEvent{FileName: event.Name, FileEvent: event.Op.String(), FileHash: filehash}
+
+	if nil == _Client {
+		for {
+			if rpcReconnect(serverip) {
+				break
+			}
+
+			time.Sleep(5000 * time.Millisecond)
+		}
+	}
+	_Client.Call(RPCReportEvent, args, &resp)
+	_Client = nil
+}
+
+//rpcreport fanotify上报日志信息
+func rpcreportfan(FileName, FileEvent, filehash string, serverip string) {
+	var resp string
+	//上报内容
+	args := ReportEvent{FileName: FileName, FileEvent: FileEvent, FileHash: filehash}
 
 	if nil == _Client {
 		for {

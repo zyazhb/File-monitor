@@ -31,7 +31,7 @@ func RunInotify(filenames []string, hashflag bool, serverip string) {
 					filehash = calcHash(event.Name) //计算hash
 				}
 				if serverip != "" {
-					go rpcreport(event, filehash, serverip) //rpc上报
+					go rpcreporti(event, filehash, serverip) //rpc上报
 				}
 
 			case err, ok := <-watcher.Errors:
