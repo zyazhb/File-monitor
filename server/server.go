@@ -44,6 +44,7 @@ func main() {
 		router.GET("/usermanager", model.UserManager)
 		router.GET("/getalluser", model.UserManage)
 		router.GET("/showinfo", model.ShowInfo)
+		router.POST("/Editor", model.Editor)
 	}
 
 	router.NoRoute(model.NotFoundHandle)

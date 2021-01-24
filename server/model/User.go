@@ -1,7 +1,10 @@
 package model
 
 import (
+	"fmt"
+	"log"
 	"net/http"
+	"strconv"
 
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
@@ -67,7 +70,13 @@ func UserManage(c *gin.Context) {
 func ShowInfo(c *gin.Context) {
 	CheckLogin(c, true)
 	session := sessions.Default(c)
-	c.HTML(http.StatusOK, "showinfo.html", gin.H{"email": session.Get("loginuser"), "role": session.Get("role")})
+	uid, _ := strconv.Atoi(c.Query("uid"))
+	var user User
+	email := fmt.Sprintf("%v", session.Get("loginuser"))
+	// email := c.Query("email")
+	log.Printf("%T\n", uid)
+	user = Infoshow(&user, email)
+	c.HTML(http.StatusOK, "showinfo.html", gin.H{"User": user})
 }
 
 //Register 注册页
@@ -94,4 +103,21 @@ func RegisterForm(c *gin.Context) {
 		//留给js写弹窗 两次密码不匹配
 		c.Redirect(http.StatusFound, "/register")
 	}
+}
+
+//Editor 修改用户信息
+func Editor(c *gin.Context) {
+	email := c.PostForm("email")
+	uid, _ := strconv.Atoi(c.PostForm("uid"))
+	pass := c.PostForm("password")
+	role, _ := strconv.Atoi(c.PostForm("role"))
+	session := sessions.Default(c)
+	pre := fmt.Sprintf("%v", session.Get("loginuser"))
+	var user User
+	user = Infoshow(&user, pre)
+	if uid != user.UID {
+		c.HTML(http.StatusOK, "showinfo.html", gin.H{"User": user, "err": "can not editor uid"})
+	}
+	UserEditor(uid, role, email, pass)
+	c.Redirect(http.StatusFound, "/userManage")
 }
