@@ -46,6 +46,16 @@ func DbSel(u *User, email, passmd5 string) (int, int) {
 	return u.UID, u.Role
 }
 
+//Infoshow 展示所有信息用于修改
+func Infoshow(u *User, email string) (user User) {
+	db, err := gorm.Open(sqlite.Open("./user.db"), &gorm.Config{})
+	if err != nil {
+		panic(err)
+	}
+	db.Where("email=? ", email).Find(u)
+	return *u
+}
+
 //AllUserInfo 全部用户信息
 func AllUserInfo() []User {
 	//连接数据库
@@ -72,4 +82,17 @@ func DbInsert(email string, passmd5 string) error {
 	u := User{newid, email, passmd5, 999, currentTime} //默认role999 意味无权限
 	res := db.Create(&u)
 	return res.Error
+}
+
+//UserEditor 修改用户信息
+func UserEditor(uid, role int, email, pass string) {
+	db, err := gorm.Open(sqlite.Open("./user.db"), &gorm.Config{})
+	if err != nil {
+		panic(err)
+	}
+	var user User
+	db.Model(&user).Where("UID=?", uid).Updates(User{
+		Email:    email,
+		Password: pass,
+		Role:     role})
 }
