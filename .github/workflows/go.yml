@@ -29,7 +29,7 @@ jobs:
             curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
             dep ensure
         fi
-        cp ./protocol $GOROOT/src/ -r
+        # cp ./protocol $GOROOT/src/ -r
 
     - name: Build:agent
       run: cd ./agent && go build -v .
