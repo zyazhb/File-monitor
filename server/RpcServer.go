@@ -54,9 +54,10 @@ func RPCServer() {
 
 	//3、通过该函数把mathUtil中提供的服务注册到HTTP协议上，方便调用者可以利用http的方式进行数据传递
 	rpc.HandleHTTP()
+	//4、初始化logger日志系统
 	logger.Init("RpcLogger", true, false, ioutil.Discard)
 	logger.SetFlags(log.LstdFlags)
-	//4、在特定的端口进行监听
+	//5、在特定的端口进行监听
 	listen, err := net.Listen("tcp", ":8083")
 	if err != nil {
 		panic(err.Error())

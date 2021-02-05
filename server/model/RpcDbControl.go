@@ -60,8 +60,7 @@ func RPCDbInsert(filename string, operation string, hash string) error {
 	}
 	var rpcdb RPCDb
 	db.Last(&rpcdb)
-	lastid := rpcdb.RID
-	newid := lastid + 1
+	newid := rpcdb.RID + 1
 	currentTime := time.Now().Format("2006-01-02 15:04:05")
 	newreport := RPCDb{newid, filename, operation, currentTime, hash}
 	res := db.Create(&newreport)

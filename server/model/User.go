@@ -63,7 +63,7 @@ func UserManage(c *gin.Context) {
 	}
 }
 
-//showinfo 展示可修改信息
+//ShowInfo 展示可修改信息
 func ShowInfo(c *gin.Context) {
 	CheckLogin(c, true)
 	session := sessions.Default(c)

@@ -15,6 +15,7 @@ func main() {
 
 	//初始化数据库
 	model.DbInit()
+	//启动RPC服务器
 	go RPCServer()
 
 	// 初始化Gin

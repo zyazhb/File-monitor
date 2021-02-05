@@ -9,7 +9,7 @@ import (
 	"golang.org/x/sys/unix"
 )
 
-//RunFanotify 运行Fanotify
+//RunFanotify 运行Fanotify监控 
 func RunFanotify(mountpoint string, hashflag bool, serverip string) {
 	// logger.SetFlags(log.Lshortfile)
 
