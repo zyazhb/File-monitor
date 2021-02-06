@@ -53,6 +53,7 @@
                     //将数据添加到表格中
                     $("table").append("<tr>" +
                       "<td>" + data[index].RID + "</td>" +
+                      "<td>" + data[index].AgentIP + "</td>" +
                       "<td>" + data[index].FileName + "</td>" +
                       "<td>" + data[index].Operation + "</td>" +
                       "<td>" + data[index].Createtime + "</td>" +
@@ -77,6 +78,7 @@
             <thead>
               <tr>
                 <th>RID</th>
+                <th>AgentIP</th>
                 <th>FileName</th>
                 <th>Operation</th>
                 <th>Time</th>
@@ -88,6 +90,7 @@
 
               <tr id="reportlist">
                 <th id="rid">no network connection</th>
+                <th id="AgentIP">no network connection</th>
                 <th id="FileName">no network connection</th>
                 <th id="Operation">no network connection</th>
                 <th id="Time">no network connection</th>

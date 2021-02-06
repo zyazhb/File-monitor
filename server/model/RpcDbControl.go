@@ -10,6 +10,7 @@ import (
 //RPCDb 表基本信息
 type RPCDb struct {
 	RID        int `gorm:"primary_key"`
+	AgentIP    string
 	FileName   string
 	Operation  string
 	Createtime string
@@ -53,7 +54,7 @@ func RPCDbDel(rid string) {
 }
 
 //RPCDbInsert RPC数据库插入数据
-func RPCDbInsert(filename string, operation string, hash string) error {
+func RPCDbInsert(agentip string, filename string, operation string, hash string) error {
 	db, err := gorm.Open(sqlite.Open("./report.db"), &gorm.Config{})
 	if err != nil {
 		panic(err)
@@ -62,7 +63,7 @@ func RPCDbInsert(filename string, operation string, hash string) error {
 	db.Last(&rpcdb)
 	newid := rpcdb.RID + 1
 	currentTime := time.Now().Format("2006-01-02 15:04:05")
-	newreport := RPCDb{newid, filename, operation, currentTime, hash}
+	newreport := RPCDb{newid, agentip, filename, operation, currentTime, hash}
 	res := db.Create(&newreport)
 	return res.Error
 }

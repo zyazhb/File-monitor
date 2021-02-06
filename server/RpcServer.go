@@ -20,6 +20,7 @@ const (
 
 //ReportEvent 传递的数据结构 一定要与agent/notify/rpcconnect统一
 type ReportEvent struct {
+	AgentIP   string
 	FileName  string
 	FileEvent string
 	FileHash  string
@@ -31,12 +32,13 @@ type MonitorServer struct {
 
 //ReportEvent 该方法向外暴露ReportEvent
 func (ms *MonitorServer) ReportEvent(event *ReportEvent, resp *string) error {
+
 	if event.FileHash != "" {
 		logger.Infof("\033[1;33m [*]%s hash:%x\n", event.FileName, event.FileHash)
 	}
 	logger.Infof("\033[1;33m [*]%s file:%s\033[0m", event.FileEvent, event.FileName)
 	//RPC数据库插入数据
-	model.RPCDbInsert(event.FileName, event.FileEvent, event.FileHash)
+	model.RPCDbInsert(event.AgentIP, event.FileName, event.FileEvent, event.FileHash)
 	*resp = event.FileName
 	return nil //返回类型
 }

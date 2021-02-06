@@ -5,6 +5,7 @@ import (
 	"encoding/hex"
 	"io"
 	"io/ioutil"
+	"net"
 	"os"
 
 	"github.com/google/logger"
@@ -53,4 +54,26 @@ func calcHash(filename string) string {
 	sum := hash.Sum(nil)
 
 	return string(hex.EncodeToString(sum))
+}
+
+//geAgentIP 获取客户端IP
+func geAgentIP() string {
+	addrs, err := net.InterfaceAddrs()
+
+	if err != nil {
+		return "Can't get agent ip!"
+	}
+
+	for _, address := range addrs {
+		// 检查ip地址判断是否回环地址
+		if ipnet, ok := address.(*net.IPNet); ok && !ipnet.IP.IsLoopback() {
+			if ipnet.IP.To4() != nil {
+				return ipnet.IP.String()
+			}
+
+		}
+	}
+
+	return "Can't get agent ip!"
+
 }
