@@ -9,7 +9,7 @@ import (
 	"golang.org/x/sys/unix"
 )
 
-//RunFanotify 运行Fanotify监控 
+//RunFanotify 运行Fanotify监控
 func RunFanotify(mountpoint string, hashflag bool, serverip string) {
 	// logger.SetFlags(log.Lshortfile)
 
@@ -37,7 +37,7 @@ func RunFanotify(mountpoint string, hashflag bool, serverip string) {
 			filehash = calcHash(path) //计算hash
 		}
 		if serverip != "" {
-			go rpcreportfan(path, filehash, event, serverip) //rpc上报
+			go rpcreportfan(path, event, filehash, serverip) //rpc上报
 		}
 		if err == nil && pid != -1 {
 			logger.Info("\033[1;33m [*]PID:", pid, " ", event, " ", path, "\033[0m")
