@@ -35,6 +35,7 @@ func (ms *MonitorServer) ReportEvent(event *ReportEvent, resp *string) error {
 		logger.Infof("\033[1;33m [*]%s hash:%x\n", event.FileName, event.FileHash)
 	}
 	logger.Infof("\033[1;33m [*]%s file:%s\033[0m", event.FileEvent, event.FileName)
+	//RPC数据库插入数据
 	model.RPCDbInsert(event.FileName, event.FileEvent, event.FileHash)
 	*resp = event.FileName
 	return nil //返回类型

@@ -52,7 +52,7 @@ func RPCDbDel(rid string) {
 	db.Where("r_id=?", rid).Delete(RPCDb{})
 }
 
-//RPCDbInsert 注册插入数据
+//RPCDbInsert RPC数据库插入数据
 func RPCDbInsert(filename string, operation string, hash string) error {
 	db, err := gorm.Open(sqlite.Open("./report.db"), &gorm.Config{})
 	if err != nil {
