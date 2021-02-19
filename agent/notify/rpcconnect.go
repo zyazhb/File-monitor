@@ -15,6 +15,7 @@ const (
 
 //ReportEvent 传递的数据结构 一定要与server/rpcserver统一
 type ReportEvent struct {
+	AgentIP   string
 	FileName  string
 	FileEvent string
 	FileHash  string
@@ -35,7 +36,7 @@ func init() {
 func rpcreporti(event fsnotify.Event, filehash string, serverip string) {
 	var resp string
 	//上报内容
-	args := ReportEvent{FileName: event.Name, FileEvent: event.Op.String(), FileHash: filehash}
+	args := ReportEvent{AgentIP: geAgentIP(), FileName: event.Name, FileEvent: event.Op.String(), FileHash: filehash}
 
 	if nil == _Client {
 		for {
@@ -54,7 +55,7 @@ func rpcreporti(event fsnotify.Event, filehash string, serverip string) {
 func rpcreportfan(FileName, FileEvent, filehash string, serverip string) {
 	var resp string
 	//上报内容
-	args := ReportEvent{FileName: FileName, FileEvent: FileEvent, FileHash: filehash}
+	args := ReportEvent{AgentIP: geAgentIP(), FileName: FileName, FileEvent: FileEvent, FileHash: filehash}
 
 	if nil == _Client {
 		for {

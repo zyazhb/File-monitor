@@ -7,7 +7,7 @@ import (
 	"github.com/google/logger"
 )
 
-//RunInotify 运行Inotify
+//RunInotify 运行Inotify监控
 func RunInotify(filenames []string, hashflag bool, serverip string) {
 	watcher, err := fsnotify.NewWatcher()
 	if err != nil {
