@@ -1,6 +1,8 @@
 package model
 
 import (
+	"crypto/md5"
+	"encoding/hex"
 	"log"
 	"math/rand"
 	"net/http"
@@ -41,6 +43,13 @@ func GetRandomString(seed int64) string {
 		result = append(result, bytes[r.Intn(len(bytes))])
 	}
 	return string(result)
+}
+
+//GenMD5 生成32位MD5
+func GenMD5(text string) string {
+	ctx := md5.New()
+	ctx.Write([]byte(text))
+	return hex.EncodeToString(ctx.Sum(nil))
 }
 
 //PrintLog 打印日志
