@@ -26,7 +26,12 @@ func DbInit() {
 	//迁移 schema
 	db.AutoMigrate(&User{})
 	currentTime := time.Now().Format("2006-01-02 15:04:05")
-	u1 := User{1, "admin@1.com", "123456", 0, currentTime}
+
+	email := "admin@null.com"
+	password := GetRandomString(time.Now().UnixNano())
+	PrintLog("Your email is: " + email)
+	PrintLog("Your password is: " + password)
+	u1 := User{1, email, password, 0, currentTime}
 	db.Create(&u1)
 }
 

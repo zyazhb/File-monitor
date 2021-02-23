@@ -14,8 +14,10 @@ func main() {
 	//gin.SetMode(gin.ReleaseMode)
 
 	//初始化数据库
-	model.DbInit()
-	//启动RPC服务器
+	exist, err := IsExists("./user.db")
+	if !exist && err == nil {
+		model.DbInit()
+	}
 	go RPCServer()
 
 	// 初始化Gin
