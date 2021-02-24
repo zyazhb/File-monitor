@@ -7,6 +7,7 @@ import (
 	"log"
 
 	"github.com/google/logger"
+	"sync"
 
 	"net"
 	"net/http"
@@ -30,6 +31,8 @@ type ReportEvent struct {
 type MonitorServer struct {
 }
 
+var lock sync.Mutex
+
 //ReportEvent 该方法向外暴露ReportEvent
 func (ms *MonitorServer) ReportEvent(event *ReportEvent, resp *string) error {
 
@@ -38,7 +41,9 @@ func (ms *MonitorServer) ReportEvent(event *ReportEvent, resp *string) error {
 	}
 	logger.Infof("\033[1;33m [*]%s file:%s\033[0m", event.FileEvent, event.FileName)
 	//RPC数据库插入数据
+	lock.Lock()
 	model.RPCDbInsert(event.AgentIP, event.FileName, event.FileEvent, event.FileHash)
+	lock.Unlock()
 	*resp = event.FileName
 	return nil //返回类型
 }

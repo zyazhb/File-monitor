@@ -31,7 +31,7 @@ func Checkin(c *gin.Context) {
 	email := c.PostForm("email")
 	password := c.PostForm("password")
 	var user User
-	uid, role := DbSel(&user, email, password)
+	uid, role := DbSel(&user, email, GenMD5(password))
 	if uid > 0 {
 		//邮箱和密码验证成功之后设置session
 		session := sessions.Default(c)
@@ -84,7 +84,7 @@ func RegisterForm(c *gin.Context) {
 	password := c.PostForm("password")
 	repassword := c.PostForm("repassword")
 	if password == repassword {
-		err := DbInsert(email, password)
+		err := DbInsert(email, GenMD5(password))
 		if err != nil {
 			c.Redirect(http.StatusFound, "/register")
 		} else {
