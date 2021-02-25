@@ -39,7 +39,7 @@ func main() {
 		router.POST("/login", model.Checkin)
 		router.GET("/logout", model.LogoutHandler)
 		router.GET("/manager", model.ManagerHandler)
-		router.GET("/getresult", model.GetReport)
+		router.GET("/getresult/:page", model.GetReport)
 		router.GET("/delete/:rid", model.DeleteReport)
 		router.GET("/usermanager", model.UserManager)
 		router.GET("/getalluser", model.UserManage)

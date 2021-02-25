@@ -19,7 +19,7 @@
       <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse"></nav>
       <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-md-4">
         <h2>Record</h2>
-        <a href="javascript:void(0)" class="btn" style="background-color: grey;">Button</a>
+        <a href="javascript:void(0)" class="btn" style="background-color: grey;" id="flush">Button</a>
         <select class="custom-select w-50" id="setInterval" required="">
           <option value="3">3</option>
           <option value="2">2</option>
@@ -28,6 +28,19 @@
 
         <script>
           $(function () {
+            // 初始化页码
+            page = 1
+            $("a[class='page-link']").click(function () {
+              atext = $(this).text()
+              if (atext == "Previous") {
+                page--
+              } else if (atext == "Next") {
+                page++
+              } else {
+                page = atext
+              }
+            })
+            // 页面刷新
             flush();
             interval = setInterval(flush, $("select").val() * 1000);
 
@@ -36,14 +49,15 @@
               interval = setInterval(flush, $("select").val() * 1000);
             })
 
-            $("a").click(flush)
+            $("a[id='flush']").click(flush)
+
 
             function flush() {
               $("tr:gt(0)").remove();
               //发送请求
               $.ajax({
                 type: "get",
-                url: "/getresult",
+                url: "/getresult/" + page,
                 // data: "id=7788",
                 dataType: "json", //表示可以跨域访问json数据
                 async: false, //锁定浏览器，只有请求处理完毕之后（回调函数调用完成之后），才能执行后面的代码
@@ -100,6 +114,18 @@
             </tbody>
           </table>
         </div>
+        <!-- TODO 获取页码并批量显示 -->
+        <nav class="container">
+          <div class="row row-vertical-center">
+            <ul class="pagination row m-auto" id="pagination">
+              <li class="page-item d-sm-flex"><a class="page-link" href="javascript:void(0)">Previous</a></li>
+              <li class="page-item d-sm-flex"><a class="page-link" href="javascript:void(0)">1</a></li>
+              <li class="page-item d-sm-flex"><a class="page-link" href="javascript:void(0)">2</a></li>
+              <li class="page-item d-sm-flex"><a class="page-link" href="javascript:void(0)">3</a></li>
+              <li class="page-item d-sm-flex"><a class="page-link" href="javascript:void(0)">Next</a></li>
+            </ul>
+          </div>
+        </nav>
       </main>
     </div>
   </div>

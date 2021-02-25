@@ -3,6 +3,7 @@ package model
 import (
 	"log"
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
@@ -33,7 +34,8 @@ func ManagerHandler(c *gin.Context) {
 //GetReport 取得报告
 func GetReport(c *gin.Context) {
 	CheckLogin(c, true)
-	result := RPCDbSel()
+	page, _ := strconv.Atoi(c.Param("page"))
+	result := RPCDbSel(page)
 	c.JSON(200, result)
 }
 
