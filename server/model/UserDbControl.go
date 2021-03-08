@@ -47,12 +47,12 @@ func DbSel(u *User, email, passmd5 string) (int, int) {
 }
 
 //Infoshow 展示所有信息用于修改
-func Infoshow(u *User, email string) (user User) {
+func Infoshow(u *User, uid int) (user User) {
 	db, err := gorm.Open(sqlite.Open("./user.db"), &gorm.Config{})
 	if err != nil {
 		panic(err)
 	}
-	db.Where("email=? ", email).Find(u)
+	db.Where("uid=? ", uid).Find(u)
 	return *u
 }
 
@@ -91,8 +91,8 @@ func UserEditor(uid, role int, email, pass string) {
 		panic(err)
 	}
 	var user User
-	db.Model(&user).Where("UID=?", uid).Updates(User{
-		Email:    email,
-		Password: pass,
-		Role:     role})
+	db.Model(&user).Where("UID=?", uid).Updates(map[string]interface{}{
+		"email":    email,
+		"password": pass,
+		"role":     role})
 }

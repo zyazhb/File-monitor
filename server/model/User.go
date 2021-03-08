@@ -1,7 +1,6 @@
 package model
 
 import (
-	"fmt"
 	"log"
 	"net/http"
 	"strconv"
@@ -69,14 +68,12 @@ func UserManage(c *gin.Context) {
 //ShowInfo 展示可修改信息
 func ShowInfo(c *gin.Context) {
 	CheckLogin(c, true)
-	session := sessions.Default(c)
 	uid, _ := strconv.Atoi(c.Query("uid"))
 	var user User
-	email := fmt.Sprintf("%v", session.Get("loginuser"))
-	// email := c.Query("email")
 	log.Printf("%T\n", uid)
-	user = Infoshow(&user, email)
+	user = Infoshow(&user, uid)
 	c.HTML(http.StatusOK, "showinfo.html", gin.H{"User": user})
+
 }
 
 //Register 注册页
@@ -107,17 +104,24 @@ func RegisterForm(c *gin.Context) {
 
 //Editor 修改用户信息
 func Editor(c *gin.Context) {
-	email := c.PostForm("email")
 	uid, _ := strconv.Atoi(c.PostForm("uid"))
-	pass := c.PostForm("password")
+	email := c.PostForm("email")
+	pass := c.PostForm("pass")
+	repass := c.PostForm("repass")
 	role, _ := strconv.Atoi(c.PostForm("role"))
-	session := sessions.Default(c)
-	pre := fmt.Sprintf("%v", session.Get("loginuser"))
 	var user User
-	user = Infoshow(&user, pre)
+	md5pass := pass
+	user = Infoshow(&user, uid)
 	if uid != user.UID {
 		c.HTML(http.StatusOK, "showinfo.html", gin.H{"User": user, "err": "can not editor uid"})
 	}
-	UserEditor(uid, role, email, pass)
-	c.Redirect(http.StatusFound, "/userManage")
+
+	if pass != repass {
+		c.HTML(http.StatusOK, "showinfo.html", gin.H{"User": user, "err": "password don't match"})
+	}
+	if pass != user.Password {
+		md5pass = GenMD5(pass)
+	}
+	UserEditor(uid, role, email, md5pass)
+	c.Redirect(http.StatusFound, "/usermanager")
 }
