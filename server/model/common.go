@@ -39,6 +39,13 @@ func GetReport(c *gin.Context) {
 	c.JSON(200, result)
 }
 
+//GetReportCount 取得分页数
+func GetReportCount(c *gin.Context) {
+	CheckLogin(c, true)
+	result := RPCDbPageCount()
+	c.JSON(200, result)
+}
+
 //DeleteReport 删除报告
 func DeleteReport(c *gin.Context) {
 	CheckLogin(c, true)

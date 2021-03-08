@@ -30,16 +30,6 @@
           $(function () {
             // 初始化页码
             page = 1
-            $("a[class='page-link']").click(function () {
-              atext = $(this).text()
-              if (atext == "Previous") {
-                page--
-              } else if (atext == "Next") {
-                page++
-              } else {
-                page = atext
-              }
-            })
             // 页面刷新
             flush();
             interval = setInterval(flush, $("select").val() * 1000);
@@ -62,7 +52,7 @@
                 dataType: "json", //表示可以跨域访问json数据
                 async: false, //锁定浏览器，只有请求处理完毕之后（回调函数调用完成之后），才能执行后面的代码
                 success: function (data) {
-                  // console.log(data)
+                  // //console.log(data)
                   $.each(data, function (index) {
                     //将数据添加到表格中
                     $("table").append("<tr>" +
@@ -79,6 +69,34 @@
               })
             }
           })
+
+          $(function () {
+            $.ajax({
+              type: "get",
+              url: "/getresult/",
+              async: false, //锁定浏览器，只有请求处理完毕之后（回调函数调用完成之后），才能执行后面的代码
+              success: function (data) {
+                //console.log(data - 1)
+                $("ul").append("<li class='page-item d-sm-flex'><a class='page-link' href='javascript:void(0)'>" + (data + 1) + "</a></li>");
+                $("ul").append("<li class='page-item d-sm-flex'><a class='page-link' href='javascript:void(0)'>Next</a></li>");
+              }
+            })
+            choosepage()
+          })
+
+          function choosepage() {
+            $("a[class='page-link']").click(function () {
+              atext = $(this).text()
+              //console.log(atext)
+              if (atext == "Previous") {
+                page--
+              } else if (atext == "Next") {
+                page++
+              } else {
+                page = atext
+              }
+            })
+          }
 
           function deleterpt(rid) {
             $.ajax({
@@ -122,7 +140,9 @@
               <li class="page-item d-sm-flex"><a class="page-link" href="javascript:void(0)">1</a></li>
               <li class="page-item d-sm-flex"><a class="page-link" href="javascript:void(0)">2</a></li>
               <li class="page-item d-sm-flex"><a class="page-link" href="javascript:void(0)">3</a></li>
-              <li class="page-item d-sm-flex"><a class="page-link" href="javascript:void(0)">Next</a></li>
+              <li class="page-item d-sm-flex"><a class="page-link" href="javascript:void(0)">4</a></li>
+              <li class="page-item d-sm-flex"><a class="page-link" href="javascript:void(0)">5</a></li>
+              <li class="page-item d-sm-flex"><a class="page-link" href="">...</a></li>
             </ul>
           </div>
         </nav>

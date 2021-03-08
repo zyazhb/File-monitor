@@ -40,6 +40,7 @@ func main() {
 		router.GET("/logout", model.LogoutHandler)
 		router.GET("/manager", model.ManagerHandler)
 		router.GET("/getresult/:page", model.GetReport)
+		router.GET("/getresult/", model.GetReportCount)
 		router.GET("/delete/:rid", model.DeleteReport)
 		router.GET("/usermanager", model.UserManager)
 		router.GET("/getalluser", model.UserManage)

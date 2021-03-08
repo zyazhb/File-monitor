@@ -46,6 +46,18 @@ func RPCDbSel(page int) []RPCDb {
 	return rpcdb
 }
 
+//RPCDbPageCount 计算总数
+func RPCDbPageCount() int64 {
+	//连接数据库
+	db, err := gorm.Open(sqlite.Open("./report.db"), &gorm.Config{})
+	if err != nil {
+		panic(err)
+	}
+	var count int64
+	db.Model(&RPCDb{}).Count(&count)
+	return count / 15
+}
+
 //RPCDbDel 数据删除
 func RPCDbDel(rid string) {
 	//连接数据库
