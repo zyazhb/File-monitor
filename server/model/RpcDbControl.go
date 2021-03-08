@@ -26,21 +26,36 @@ func RPCDbInit() {
 	}
 	//迁移 schema
 	db.AutoMigrate(&RPCDb{})
-	if len(RPCDbSel()) < 1 {
+	if len(RPCDbSel(1)) < 1 {
 		db.Create(&RPCDb{})
 	}
 }
 
 //RPCDbSel 数据查询
-func RPCDbSel() []RPCDb {
+func RPCDbSel(page int) []RPCDb {
 	//连接数据库
 	db, err := gorm.Open(sqlite.Open("./report.db"), &gorm.Config{})
 	if err != nil {
 		panic(err)
 	}
 	var rpcdb []RPCDb
-	db.Order("r_id desc").Find(&rpcdb)
+	//暂时pagesize是硬编码的
+	pageSize := 15
+	DB := db.Limit(pageSize).Offset((page - 1) * pageSize)
+	DB.Order("r_id desc").Find(&rpcdb)
 	return rpcdb
+}
+
+//RPCDbPageCount 计算总数
+func RPCDbPageCount() int64 {
+	//连接数据库
+	db, err := gorm.Open(sqlite.Open("./report.db"), &gorm.Config{})
+	if err != nil {
+		panic(err)
+	}
+	var count int64
+	db.Model(&RPCDb{}).Count(&count)
+	return count / 15
 }
 
 //RPCDbDel 数据删除
