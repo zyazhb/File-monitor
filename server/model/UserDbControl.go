@@ -84,8 +84,8 @@ func DbInsert(email string, passmd5 string) error {
 	return res.Error
 }
 
-//UserEditor 修改用户信息
-func UserEditor(uid, role int, email, pass string) {
+//EditUser 修改用户信息
+func EditUser(uid, role int, email, pass string) {
 	db, err := gorm.Open(sqlite.Open("./user.db"), &gorm.Config{})
 	if err != nil {
 		panic(err)

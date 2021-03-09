@@ -84,24 +84,29 @@ func Editor(c *gin.Context) {
 	email := c.PostForm("email")
 	pass := c.PostForm("pass")
 	repass := c.PostForm("repass")
-	role, _ := strconv.Atoi(c.PostForm("role"))
-
+	//拿到要修改用户基本信息
 	var user User
 	user = DbGetByuid(&user, uid)
-
 	if pass == repass {
-		if pass != user.Password {
-			UserEditor(uid, role, email, GenMD5(pass))
-		} else {
-			UserEditor(uid, role, email, pass)
+		//用户想要修改角色吗
+		session := sessions.Default(c)
+		currentrole := session.Get("role").(int)
+		newrole, _ := strconv.Atoi(c.PostForm("role"))
+		if newrole != user.Role && currentrole != 0 {
+			newrole = user.Role
+			c.HTML(http.StatusOK, "showinfo.html", gin.H{"User": user, "err": "No permission", "errshow": "show"})
 		}
-		SetSession(c, uid, email, role)
+		//用户想要修改密码吗
+		if pass != user.Password {
+			pass = GenMD5(pass)
+		}
+		EditUser(uid, newrole, email, pass)
+		//修改成功后更新信息
 		user = DbGetByuid(&user, uid)
 		c.HTML(http.StatusOK, "showinfo.html", gin.H{"User": user, "success": "Saved!", "sucshow": "show"})
 	} else {
 		c.HTML(http.StatusOK, "showinfo.html", gin.H{"User": user, "err": "password isn't match", "errshow": "show"})
 	}
-
 }
 
 //Register 注册页
