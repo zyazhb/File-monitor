@@ -109,6 +109,16 @@ func Editor(c *gin.Context) {
 	}
 }
 
+//DelUser 删除用户
+func DelUser(c *gin.Context) {
+	CheckLogin(c, true)
+	session := sessions.Default(c)
+	currentrole := session.Get("role").(int)
+	if currentrole == 0 {
+		DbDelUser(c.Param("uid"))
+	}
+}
+
 //Register 注册页
 func Register(c *gin.Context) {
 	if CheckLogin(c, false) == true {

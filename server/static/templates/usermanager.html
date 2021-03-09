@@ -58,6 +58,7 @@
                       "<td>" + data[index].Role + "</td>" +
                       "<td>" + data[index].Createtime + "</td>" +
                       "<td><a href='/showinfo/" + data[index].UID + "'>Edit</a></td>" +
+                      "<td><a href='javascript:deluser(" + data[index].UID + ")'>Delete</a></td>" +
                       "</tr>");
                   })
                 }
@@ -65,10 +66,10 @@
             }
           })
 
-          function deleterpt(rid) {
+          function deluser(uid) {
             $.ajax({
               type: "get",
-              url: "/delete/" + rid,
+              url: "/deluser/" + uid,
             })
           }
         </script>

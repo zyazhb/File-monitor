@@ -96,3 +96,12 @@ func EditUser(uid, role int, email, pass string) {
 		"password": pass,
 		"role":     role})
 }
+
+//DbDelUser 删除用户信息
+func DbDelUser(uid string) {
+	db, err := gorm.Open(sqlite.Open("./user.db"), &gorm.Config{})
+	if err != nil {
+		panic(err)
+	}
+	db.Where("UID=?", uid).Delete(User{})
+}
