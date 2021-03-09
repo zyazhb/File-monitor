@@ -1,7 +1,6 @@
 package model
 
 import (
-	"log"
 	"net/http"
 	"strconv"
 
@@ -38,6 +37,7 @@ func Checkin(c *gin.Context) {
 		//邮箱和密码验证成功之后设置session
 		session := sessions.Default(c)
 		session.Set("loginuser", email)
+		session.Set("uid", uid)
 		session.Set("role", role)
 		session.Save()
 		c.Redirect(http.StatusFound, "/manager")
@@ -68,12 +68,41 @@ func UserManage(c *gin.Context) {
 //ShowInfo 展示可修改信息
 func ShowInfo(c *gin.Context) {
 	CheckLogin(c, true)
-	uid, _ := strconv.Atoi(c.Query("uid"))
+	param := c.Param("uid")
+	var uid int
+	if param != "" {
+		uid, _ = strconv.Atoi(param)
+	} else {
+		session := sessions.Default(c)
+		uid = session.Get("uid").(int)
+	}
 	var user User
-	log.Printf("%T\n", uid)
-	user = Infoshow(&user, uid)
+	user = DbGetByuid(&user, uid)
 	c.HTML(http.StatusOK, "showinfo.html", gin.H{"User": user})
+}
 
+//Editor 修改用户信息
+func Editor(c *gin.Context) {
+	CheckLogin(c, true)
+	uid, _ := strconv.Atoi(c.PostForm("uid"))
+	email := c.PostForm("email")
+	pass := c.PostForm("pass")
+	repass := c.PostForm("repass")
+	role, _ := strconv.Atoi(c.PostForm("role"))
+	var user User
+	md5pass := pass
+	user = DbGetByuid(&user, uid)
+	if uid != user.UID {
+		c.HTML(http.StatusOK, "showinfo.html", gin.H{"User": user, "err": "can not edit uid"})
+	}
+	if pass != repass {
+		c.HTML(http.StatusOK, "showinfo.html", gin.H{"User": user, "err": "password don't match"})
+	}
+	if pass != user.Password {
+		md5pass = GenMD5(pass)
+	}
+	UserEditor(uid, role, email, md5pass)
+	c.Redirect(http.StatusFound, "/usermanager")
 }
 
 //Register 注册页
@@ -100,28 +129,4 @@ func RegisterForm(c *gin.Context) {
 		//留给js写弹窗 两次密码不匹配
 		c.Redirect(http.StatusFound, "/register")
 	}
-}
-
-//Editor 修改用户信息
-func Editor(c *gin.Context) {
-	uid, _ := strconv.Atoi(c.PostForm("uid"))
-	email := c.PostForm("email")
-	pass := c.PostForm("pass")
-	repass := c.PostForm("repass")
-	role, _ := strconv.Atoi(c.PostForm("role"))
-	var user User
-	md5pass := pass
-	user = Infoshow(&user, uid)
-	if uid != user.UID {
-		c.HTML(http.StatusOK, "showinfo.html", gin.H{"User": user, "err": "can not editor uid"})
-	}
-
-	if pass != repass {
-		c.HTML(http.StatusOK, "showinfo.html", gin.H{"User": user, "err": "password don't match"})
-	}
-	if pass != user.Password {
-		md5pass = GenMD5(pass)
-	}
-	UserEditor(uid, role, email, md5pass)
-	c.Redirect(http.StatusFound, "/usermanager")
 }

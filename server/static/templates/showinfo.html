@@ -20,10 +20,10 @@
           <h2 class="mb-3">User-Info</h2>
           <form class="needs-validation" novalidate="" method="POST" action="/editor">
 
-          
-                <input type="hidden" class="form-control" id="username" name="uid" placeholder="Username" required=""
-                  value="{{.User.UID}}">
-                
+
+            <input type="hidden" class="form-control" id="username" name="uid" placeholder="Username" required=""
+              value="{{.User.UID}}">
+
 
             <div class="mb-3">
               <label for="email">Email <span class="text-muted">(Optional)</span></label>
@@ -49,7 +49,7 @@
             <div class="mb-3">
               <label for="country">Role</label>
               <select class="custom-select d-block w-100" id="country" name="role" required="">
-                <option value="{{.role}}">Choose...</option>
+                <option name="{{.User.Role}}">{{.User.Role}}</option>
                 <option value="0">0(admin)</option>
                 <option value="1">1(user)</option>
                 <option value="999">999(guest)</option>
@@ -77,9 +77,9 @@
   <footer id="footer" class="container">
     <script>
       $(function () {
-        $("#navbar").load("include/header.html");
-        $("#sidebarMenu").load("include/sidebar.html");
-        $("#footer").load("include/footer.html");
+        $("#navbar").load("/include/header.html");
+        $("#sidebarMenu").load("/include/sidebar.html");
+        $("#footer").load("/include/footer.html");
       });
     </script>
 </body>

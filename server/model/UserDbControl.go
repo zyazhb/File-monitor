@@ -46,8 +46,8 @@ func DbSel(u *User, email, passmd5 string) (int, int) {
 	return u.UID, u.Role
 }
 
-//Infoshow 展示所有信息用于修改
-func Infoshow(u *User, uid int) (user User) {
+//DbGetByuid 展示所有信息用于修改
+func DbGetByuid(u *User, uid int) (user User) {
 	db, err := gorm.Open(sqlite.Open("./user.db"), &gorm.Config{})
 	if err != nil {
 		panic(err)
