@@ -21,6 +21,15 @@ func GetSession(c *gin.Context) bool {
 	return false
 }
 
+//SetSession 设置Session
+func SetSession(c *gin.Context, uid int, email string, role int) {
+	session := sessions.Default(c)
+	session.Set("loginuser", email)
+	session.Set("uid", uid)
+	session.Set("role", role)
+	session.Save()
+}
+
 //CheckLogin 检查登录态
 func CheckLogin(c *gin.Context, RedirectFlag bool) bool {
 	islogin := GetSession(c)

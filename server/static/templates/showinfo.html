@@ -43,7 +43,7 @@
 
             <div class="mb-3">
               <label for="address2">Repeat Password<span class="text-muted">(Optional)</span></label>
-              <input type="text" class="form-control" id="address2" name="re-pass" value="{{.User.Password}}">
+              <input type="text" class="form-control" id="address2" name="repass" value="{{.User.Password}}">
             </div>
 
             <div class="mb-3">
@@ -55,8 +55,20 @@
                 <option value="999">999(guest)</option>
               </select>
               <div class="invalid-feedback">
-                Please select a valid country.
+                Please select a valid role.
               </div>
+            </div>
+
+            <div class="mb-3 alert alert-success .alert-dismissible fade {{.sucshow}}" id="success">
+              {{.success}}
+              <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </div>
+
+            <div class="mb-3 alert alert-danger .alert-dismissible fade {{.errshow}}" id="err">
+              {{.err}}
+              <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
             </div>
 
             <!-- <hr class="mb-4">

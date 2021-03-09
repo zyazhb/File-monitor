@@ -35,11 +35,7 @@ func Checkin(c *gin.Context) {
 	uid, role := DbSel(&user, email, GenMD5(password))
 	if uid > 0 {
 		//邮箱和密码验证成功之后设置session
-		session := sessions.Default(c)
-		session.Set("loginuser", email)
-		session.Set("uid", uid)
-		session.Set("role", role)
-		session.Save()
+		SetSession(c, uid, email, role)
 		c.Redirect(http.StatusFound, "/manager")
 	} else {
 		c.Redirect(http.StatusFound, "/login")
@@ -89,20 +85,23 @@ func Editor(c *gin.Context) {
 	pass := c.PostForm("pass")
 	repass := c.PostForm("repass")
 	role, _ := strconv.Atoi(c.PostForm("role"))
+
 	var user User
-	md5pass := pass
 	user = DbGetByuid(&user, uid)
-	if uid != user.UID {
-		c.HTML(http.StatusOK, "showinfo.html", gin.H{"User": user, "err": "can not edit uid"})
+
+	if pass == repass {
+		if pass != user.Password {
+			UserEditor(uid, role, email, GenMD5(pass))
+		} else {
+			UserEditor(uid, role, email, pass)
+		}
+		SetSession(c, uid, email, role)
+		user = DbGetByuid(&user, uid)
+		c.HTML(http.StatusOK, "showinfo.html", gin.H{"User": user, "success": "Saved!", "sucshow": "show"})
+	} else {
+		c.HTML(http.StatusOK, "showinfo.html", gin.H{"User": user, "err": "password isn't match", "errshow": "show"})
 	}
-	if pass != repass {
-		c.HTML(http.StatusOK, "showinfo.html", gin.H{"User": user, "err": "password don't match"})
-	}
-	if pass != user.Password {
-		md5pass = GenMD5(pass)
-	}
-	UserEditor(uid, role, email, md5pass)
-	c.Redirect(http.StatusFound, "/usermanager")
+
 }
 
 //Register 注册页
