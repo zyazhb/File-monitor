@@ -51,9 +51,7 @@ func UserManager(c *gin.Context) {
 //UserManage 取得所有用户信息
 func UserManage(c *gin.Context) {
 	CheckLogin(c, true)
-	session := sessions.Default(c)
-	role := session.Get("role")
-	if role == 0 {
+	if CheckAdmin(c) == true {
 		result := AllUserInfo()
 		c.JSON(200, result)
 	} else {
@@ -89,10 +87,8 @@ func Editor(c *gin.Context) {
 	user = DbGetByuid(&user, uid)
 	if pass == repass {
 		//用户想要修改角色吗
-		session := sessions.Default(c)
-		currentrole := session.Get("role").(int)
 		newrole, _ := strconv.Atoi(c.PostForm("role"))
-		if newrole != user.Role && currentrole != 0 {
+		if newrole != user.Role && !CheckAdmin(c) {
 			newrole = user.Role
 			c.HTML(http.StatusOK, "showinfo.html", gin.H{"User": user, "err": "No permission", "errshow": "show"})
 		}
@@ -112,10 +108,17 @@ func Editor(c *gin.Context) {
 //DelUser 删除用户
 func DelUser(c *gin.Context) {
 	CheckLogin(c, true)
-	session := sessions.Default(c)
-	currentrole := session.Get("role").(int)
-	if currentrole == 0 {
+	if CheckAdmin(c) == true {
 		DbDelUser(c.Param("uid"))
+	}
+}
+
+//AddUser 添加用户
+func AddUser(c *gin.Context) {
+	CheckLogin(c, true)
+	if CheckAdmin(c) == true {
+		role, _ := strconv.Atoi(c.PostForm("role"))
+		DbAddUser(c.PostForm("email"), c.PostForm("password"), role)
 	}
 }
 
@@ -133,7 +136,7 @@ func RegisterForm(c *gin.Context) {
 	password := c.PostForm("password")
 	repassword := c.PostForm("repassword")
 	if password == repassword {
-		err := DbInsert(email, GenMD5(password))
+		err := DbAddUser(email, GenMD5(password), 999)
 		if err != nil {
 			c.Redirect(http.StatusFound, "/register")
 		} else {

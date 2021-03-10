@@ -42,6 +42,16 @@ func CheckLogin(c *gin.Context, RedirectFlag bool) bool {
 	return true
 }
 
+//CheckAdmin 检查用户权限
+func CheckAdmin(c *gin.Context) bool {
+	session := sessions.Default(c)
+	currentrole := session.Get("role").(int)
+	if currentrole == 0 {
+		return true
+	}
+	return false
+}
+
 //GetRandomString 生成随机字符串
 func GetRandomString(seed int64) string {
 	str := "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"

@@ -47,6 +47,7 @@ func main() {
 		router.GET("/showinfo/", model.ShowInfo)
 		router.GET("/showinfo/:uid", model.ShowInfo)
 		router.GET("/deluser/:uid", model.DelUser)
+		router.GET("/adduser/", model.AddUser)
 		router.POST("/editor", model.Editor)
 	}
 
