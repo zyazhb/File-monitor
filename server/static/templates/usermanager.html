@@ -17,13 +17,15 @@
       <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse"></nav>
       <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-md-4">
         <h2>Record</h2>
-        <a href="javascript:void(0)" class="btn" style="background-color: grey;">Button</a>
-        <select class="custom-select w-50" id="setInterval" required="">
-          <option value="3">3</option>
-          <option value="2">2</option>
-          <option value="1">1</option>
-        </select>
-
+        <div class="container-fluid">
+          <a href="javascript:void(0)" class="btn" style="background-color: grey; margin-left: 0">refresh</a>
+          <select class="custom-select w-50" style="margin-left: 1%;" id="setInterval" required="">
+            <option value="3">3</option>
+            <option value="2">2</option>
+            <option value="1">1</option>
+          </select>
+          <a href="javascript:void(0)" class="btn" style="background-color: grey; margin-left: 34%;">Add User</a>
+        </div>
         <script>
           $(function () {
             flush();
@@ -55,7 +57,8 @@
                       "<td>" + data[index].Password + "</td>" +
                       "<td>" + data[index].Role + "</td>" +
                       "<td>" + data[index].Createtime + "</td>" +
-                      "<td><a href='javascript:edituser(" + data[index].RID + ")'>Edit</a></td>" +
+                      "<td><a href='/showinfo/" + data[index].UID + "'>Edit</a></td>" +
+                      "<td><a href='javascript:deluser(" + data[index].UID + ")'>Delete</a></td>" +
                       "</tr>");
                   })
                 }
@@ -63,10 +66,10 @@
             }
           })
 
-          function deleterpt(rid) {
+          function deluser(uid) {
             $.ajax({
               type: "get",
-              url: "/delete/" + rid,
+              url: "/deluser/" + uid,
             })
           }
         </script>
@@ -101,9 +104,9 @@
   <footer id="footer" class="container">
     <script>
       $(function () {
-        $("#navbar").load("include/header.html");
-        $("#sidebarMenu").load("include/sidebar.html");
-        $("#footer").load("include/footer.html");
+        $("#navbar").load("/include/header.html");
+        $("#sidebarMenu").load("/include/sidebar.html");
+        $("#footer").load("/include/footer.html");
       });
     </script>
 </body>

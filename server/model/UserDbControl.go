@@ -46,6 +46,16 @@ func DbSel(u *User, email, passmd5 string) (int, int) {
 	return u.UID, u.Role
 }
 
+//DbGetByuid 展示所有信息用于修改
+func DbGetByuid(u *User, uid int) (user User) {
+	db, err := gorm.Open(sqlite.Open("./user.db"), &gorm.Config{})
+	if err != nil {
+		panic(err)
+	}
+	db.Where("uid=? ", uid).Find(u)
+	return *u
+}
+
 //AllUserInfo 全部用户信息
 func AllUserInfo() []User {
 	//连接数据库
@@ -58,8 +68,8 @@ func AllUserInfo() []User {
 	return userdb
 }
 
-//DbInsert 注册插入数据
-func DbInsert(email string, passmd5 string) error {
+//DbAddUser 添加用户信息
+func DbAddUser(email string, passmd5 string, role int) error {
 	db, err := gorm.Open(sqlite.Open("./user.db"), &gorm.Config{})
 	if err != nil {
 		panic(err)
@@ -69,7 +79,29 @@ func DbInsert(email string, passmd5 string) error {
 	lastid := user.UID
 	newid := lastid + 1
 	currentTime := time.Now().Format("2006-01-02 15:04:05")
-	u := User{newid, email, passmd5, 999, currentTime} //默认role999 意味无权限
+	u := User{newid, email, passmd5, role, currentTime} //默认role999 意味无权限
 	res := db.Create(&u)
 	return res.Error
+}
+
+//EditUser 修改用户信息
+func EditUser(uid, role int, email, pass string) {
+	db, err := gorm.Open(sqlite.Open("./user.db"), &gorm.Config{})
+	if err != nil {
+		panic(err)
+	}
+	var user User
+	db.Model(&user).Where("UID=?", uid).Updates(map[string]interface{}{
+		"email":    email,
+		"password": pass,
+		"role":     role})
+}
+
+//DbDelUser 删除用户信息
+func DbDelUser(uid string) {
+	db, err := gorm.Open(sqlite.Open("./user.db"), &gorm.Config{})
+	if err != nil {
+		panic(err)
+	}
+	db.Where("UID=?", uid).Delete(User{})
 }

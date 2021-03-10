@@ -18,25 +18,16 @@
       <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-md-4">
         <div class="col-md-8 order-md-1">
           <h2 class="mb-3">User-Info</h2>
-          <form class="needs-validation" novalidate="">
+          <form class="needs-validation" novalidate="" method="POST" action="/editor">
 
-            <div class="mb-3">
-              <label for="username">UID</label>
-              <div class="input-group">
-                <div class="input-group-prepend">
-                  <span class="input-group-text">@</span>
-                </div>
-                <input type="text" class="form-control" id="username" placeholder="Username" required=""
-                  value="{{.username}}">
-                <div class="invalid-feedback" style="width: 100%;">
-                  Your username is required.
-                </div>
-              </div>
-            </div>
+
+            <input type="hidden" class="form-control" id="username" name="uid" placeholder="Username" required=""
+              value="{{.User.UID}}">
+
 
             <div class="mb-3">
               <label for="email">Email <span class="text-muted">(Optional)</span></label>
-              <input type="email" class="form-control" id="email" placeholder="{{.email}}">
+              <input type="email" class="form-control" id="email" name="email" value="{{.User.Email}}">
               <div class="invalid-feedback">
                 Please enter a valid email address for shipping updates.
               </div>
@@ -44,7 +35,7 @@
 
             <div class="mb-3">
               <label for="address">Password</label>
-              <input type="text" class="form-control" id="address" placeholder="{{.password}}" required="">
+              <input type="text" class="form-control" id="address" name="pass" value="{{.User.Password}}" required="">
               <div class="invalid-feedback">
                 Please enter your shipping address.
               </div>
@@ -52,20 +43,32 @@
 
             <div class="mb-3">
               <label for="address2">Repeat Password<span class="text-muted">(Optional)</span></label>
-              <input type="text" class="form-control" id="address2" placeholder="Apartment or suite">
+              <input type="text" class="form-control" id="address2" name="repass" value="{{.User.Password}}">
             </div>
 
             <div class="mb-3">
               <label for="country">Role</label>
-              <select class="custom-select d-block w-100" id="country" required="">
-                <option value="{{.role}}">Choose...</option>
-                <option>0(admin)</option>
-                <option>1(user)</option>
-                <option>999(guest)</option>
+              <select class="custom-select d-block w-100" id="country" name="role" required="">
+                <option name="{{.User.Role}}">{{.User.Role}}</option>
+                <option value="0">0(admin)</option>
+                <option value="1">1(user)</option>
+                <option value="999">999(guest)</option>
               </select>
               <div class="invalid-feedback">
-                Please select a valid country.
+                Please select a valid role.
               </div>
+            </div>
+
+            <div class="mb-3 alert alert-success .alert-dismissible fade {{.sucshow}}" id="success">
+              {{.success}}
+              <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </div>
+
+            <div class="mb-3 alert alert-danger .alert-dismissible fade {{.errshow}}" id="err">
+              {{.err}}
+              <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
             </div>
 
             <!-- <hr class="mb-4">
@@ -75,7 +78,7 @@
                 address</label>
             </div> -->
             <hr class="mb-4">
-            <button class="btn btn-primary btn-lg btn-block " type="submit">Can't edit now</button>
+            <button class="btn btn-primary btn-lg btn-block " type="submit">Save</button>
           </form>
         </div>
       </main>
@@ -86,9 +89,9 @@
   <footer id="footer" class="container">
     <script>
       $(function () {
-        $("#navbar").load("include/header.html");
-        $("#sidebarMenu").load("include/sidebar.html");
-        $("#footer").load("include/footer.html");
+        $("#navbar").load("/include/header.html");
+        $("#sidebarMenu").load("/include/sidebar.html");
+        $("#footer").load("/include/footer.html");
       });
     </script>
 </body>

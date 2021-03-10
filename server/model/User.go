@@ -2,6 +2,7 @@ package model
 
 import (
 	"net/http"
+	"strconv"
 
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
@@ -34,10 +35,7 @@ func Checkin(c *gin.Context) {
 	uid, role := DbSel(&user, email, GenMD5(password))
 	if uid > 0 {
 		//邮箱和密码验证成功之后设置session
-		session := sessions.Default(c)
-		session.Set("loginuser", email)
-		session.Set("role", role)
-		session.Save()
+		SetSession(c, uid, email, role)
 		c.Redirect(http.StatusFound, "/manager")
 	} else {
 		c.Redirect(http.StatusFound, "/login")
@@ -53,9 +51,7 @@ func UserManager(c *gin.Context) {
 //UserManage 取得所有用户信息
 func UserManage(c *gin.Context) {
 	CheckLogin(c, true)
-	session := sessions.Default(c)
-	role := session.Get("role")
-	if role == 0 {
+	if CheckAdmin(c) == true {
 		result := AllUserInfo()
 		c.JSON(200, result)
 	} else {
@@ -66,8 +62,64 @@ func UserManage(c *gin.Context) {
 //ShowInfo 展示可修改信息
 func ShowInfo(c *gin.Context) {
 	CheckLogin(c, true)
-	session := sessions.Default(c)
-	c.HTML(http.StatusOK, "showinfo.html", gin.H{"email": session.Get("loginuser"), "role": session.Get("role")})
+	param := c.Param("uid")
+	var uid int
+	if param != "" {
+		uid, _ = strconv.Atoi(param)
+	} else {
+		session := sessions.Default(c)
+		uid = session.Get("uid").(int)
+	}
+	var user User
+	user = DbGetByuid(&user, uid)
+	c.HTML(http.StatusOK, "showinfo.html", gin.H{"User": user})
+}
+
+//Editor 修改用户信息
+func Editor(c *gin.Context) {
+	CheckLogin(c, true)
+	uid, _ := strconv.Atoi(c.PostForm("uid"))
+	email := c.PostForm("email")
+	pass := c.PostForm("pass")
+	repass := c.PostForm("repass")
+	//拿到要修改用户基本信息
+	var user User
+	user = DbGetByuid(&user, uid)
+	if pass == repass {
+		//用户想要修改角色吗
+		newrole, _ := strconv.Atoi(c.PostForm("role"))
+		if newrole != user.Role && !CheckAdmin(c) {
+			newrole = user.Role
+			c.HTML(http.StatusOK, "showinfo.html", gin.H{"User": user, "err": "No permission", "errshow": "show"})
+		}
+		//用户想要修改密码吗
+		if pass != user.Password {
+			pass = GenMD5(pass)
+		}
+		EditUser(uid, newrole, email, pass)
+		//修改成功后更新信息
+		user = DbGetByuid(&user, uid)
+		c.HTML(http.StatusOK, "showinfo.html", gin.H{"User": user, "success": "Saved!", "sucshow": "show"})
+	} else {
+		c.HTML(http.StatusOK, "showinfo.html", gin.H{"User": user, "err": "password isn't match", "errshow": "show"})
+	}
+}
+
+//DelUser 删除用户
+func DelUser(c *gin.Context) {
+	CheckLogin(c, true)
+	if CheckAdmin(c) == true {
+		DbDelUser(c.Param("uid"))
+	}
+}
+
+//AddUser 添加用户
+func AddUser(c *gin.Context) {
+	CheckLogin(c, true)
+	if CheckAdmin(c) == true {
+		role, _ := strconv.Atoi(c.PostForm("role"))
+		DbAddUser(c.PostForm("email"), c.PostForm("password"), role)
+	}
 }
 
 //Register 注册页
@@ -84,7 +136,7 @@ func RegisterForm(c *gin.Context) {
 	password := c.PostForm("password")
 	repassword := c.PostForm("repassword")
 	if password == repassword {
-		err := DbInsert(email, GenMD5(password))
+		err := DbAddUser(email, GenMD5(password), 999)
 		if err != nil {
 			c.Redirect(http.StatusFound, "/register")
 		} else {
