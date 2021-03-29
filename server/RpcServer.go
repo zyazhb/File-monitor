@@ -43,7 +43,7 @@ func (ms *MonitorServer) ReportEvent(event *ReportEvent, resp *string) error {
 	//RPC数据库插入数据
 	lock.Lock()
 	model.RPCDbInsert(event.AgentIP, event.FileName, event.FileEvent, event.FileHash)
-	lock.Unlock()
+	defer lock.Unlock()
 	*resp = event.FileName
 	return nil //返回类型
 }

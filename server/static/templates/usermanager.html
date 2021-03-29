@@ -41,31 +41,22 @@
             function flush() {
               $("tr:gt(0)").remove();
               //发送请求
-              $.ajax({
-                type: "get",
-                url: "/getalluser",
-                // data: "id=7788",
-                dataType: "json", //表示可以跨域访问json数据
-                async: false, //锁定浏览器，只有请求处理完毕之后（回调函数调用完成之后），才能执行后面的代码
-                success: function (data) {
-                  // console.log(data)
-                  $.each(data, function (index) {
-                    //将数据添加到表格中
-                    $("table").append("<tr>" +
-                      "<td>" + data[index].UID + "</td>" +
-                      "<td>" + data[index].Email + "</td>" +
-                      "<td>" + data[index].Password + "</td>" +
-                      "<td>" + data[index].Role + "</td>" +
-                      "<td>" + data[index].Createtime + "</td>" +
-                      "<td><a href='/showinfo/" + data[index].UID + "'>Edit</a></td>" +
-                      "<td><a href='javascript:deluser(" + data[index].UID + ")'>Delete</a></td>" +
-                      "</tr>");
-                  })
-                }
+              data = {{.userdata }}
+              $.each(data, function (index) {
+                console.log(index)
+                //将数据添加到表格中
+                $("table").append("<tr>" +
+                  "<td>" + data[index].UID + "</td>" +
+                  "<td>" + data[index].Email + "</td>" +
+                  "<td>" + data[index].Password + "</td>" +
+                  "<td>" + data[index].Role + "</td>" +
+                  "<td>" + data[index].Createtime + "</td>" +
+                  "<td><a href='/showinfo/" + data[index].UID + "'>Edit</a></td>" +
+                  "<td><a href='javascript:deluser(" + data[index].UID + ")'>Delete</a></td>" +
+                  "</tr>");
               })
             }
           })
-
           function deluser(uid) {
             $.ajax({
               type: "get",

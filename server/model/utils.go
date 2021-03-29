@@ -15,10 +15,7 @@ import (
 func GetSession(c *gin.Context) bool {
 	session := sessions.Default(c)
 	loginuser := session.Get("loginuser")
-	if loginuser != nil {
-		return true
-	}
-	return false
+	return loginuser != nil
 }
 
 //SetSession 设置Session
@@ -33,8 +30,8 @@ func SetSession(c *gin.Context, uid int, email string, role int) {
 //CheckLogin 检查登录态
 func CheckLogin(c *gin.Context, RedirectFlag bool) bool {
 	islogin := GetSession(c)
-	if islogin == false {
-		if RedirectFlag == true {
+	if !islogin {
+		if RedirectFlag {
 			c.Redirect(http.StatusFound, "/login")
 		}
 		return false
@@ -46,10 +43,7 @@ func CheckLogin(c *gin.Context, RedirectFlag bool) bool {
 func CheckAdmin(c *gin.Context) bool {
 	session := sessions.Default(c)
 	currentrole := session.Get("role").(int)
-	if currentrole == 0 {
-		return true
-	}
-	return false
+	return currentrole == 0 
 }
 
 //GetRandomString 生成随机字符串
