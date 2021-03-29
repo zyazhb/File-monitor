@@ -10,7 +10,7 @@ import (
 
 //LoginHandler 登录页
 func LoginHandler(c *gin.Context) {
-	if CheckLogin(c, false) == true {
+	if CheckLogin(c, false) {
 		c.Redirect(http.StatusFound, "/manager")
 	}
 	c.HTML(http.StatusOK, "login.html", nil)
@@ -18,7 +18,7 @@ func LoginHandler(c *gin.Context) {
 
 //LogoutHandler 退出登录
 func LogoutHandler(c *gin.Context) {
-	if CheckLogin(c, false) == true {
+	if CheckLogin(c, false) {
 		session := sessions.Default(c)
 		session.Delete("loginuser")
 		session.Save()
@@ -51,7 +51,7 @@ func UserManager(c *gin.Context) {
 //UserManage 取得所有用户信息
 func UserManage(c *gin.Context) {
 	CheckLogin(c, true)
-	if CheckAdmin(c) == true {
+	if CheckAdmin(c) {
 		result := AllUserInfo()
 		c.JSON(200, result)
 	} else {
@@ -108,7 +108,7 @@ func Editor(c *gin.Context) {
 //DelUser 删除用户
 func DelUser(c *gin.Context) {
 	CheckLogin(c, true)
-	if CheckAdmin(c) == true {
+	if CheckAdmin(c) {
 		DbDelUser(c.Param("uid"))
 	}
 }
@@ -116,7 +116,7 @@ func DelUser(c *gin.Context) {
 //AddUser 添加用户
 func AddUser(c *gin.Context) {
 	CheckLogin(c, true)
-	if CheckAdmin(c) == true {
+	if CheckAdmin(c){
 		role, _ := strconv.Atoi(c.PostForm("role"))
 		DbAddUser(c.PostForm("email"), c.PostForm("password"), role)
 	}
@@ -124,7 +124,7 @@ func AddUser(c *gin.Context) {
 
 //Register 注册页
 func Register(c *gin.Context) {
-	if CheckLogin(c, false) == true {
+	if CheckLogin(c, false) {
 		c.Redirect(http.StatusFound, "/")
 	}
 	c.HTML(http.StatusOK, "register.html", nil)

@@ -19,7 +19,7 @@ func RPCHandler(c *gin.Context) {
 
 //IndexHandler 首页
 func IndexHandler(c *gin.Context) {
-	if CheckLogin(c, false) == true {
+	if CheckLogin(c, false) {
 		c.Redirect(http.StatusFound, "/manager")
 	}
 	c.Redirect(http.StatusFound, "/login")
