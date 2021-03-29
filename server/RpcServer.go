@@ -10,7 +10,7 @@ import (
 	"sync"
 
 	"net"
-	"net/http"
+	// "net/http"
 	"net/rpc"
 )
 
@@ -66,11 +66,15 @@ func RPCServer() {
 	logger.Init("RpcLogger", true, false, ioutil.Discard)
 	logger.SetFlags(log.LstdFlags)
 	//5、在特定的端口进行监听
-	listen, err := net.Listen("tcp", ":8083")
+	// listen, err := net.Listen("tcp", ":8083")
+	udp_addr, err := net.ResolveUDPAddr("udp", ":8083")
+	conn, err := net.ListenUDP("udp", udp_addr)
+	defer conn.Close()
 	if err != nil {
 		panic(err.Error())
 	}
 	logger.Info("Server up")
-	http.Serve(listen, nil)
+	// http.Serve(listen, nil)
+	rpc.ServeConn(conn)
 	logger.Warning("Server down")
 }

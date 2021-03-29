@@ -22,7 +22,7 @@ type ReportEvent struct {
 }
 
 var (
-	// _Client    *rpc.Client
+	_Client    *rpc.Client
 	_RpcMsg    chan *rpc.Call
 	_CanCancel chan bool
 )
@@ -34,53 +34,54 @@ func init() {
 
 //rpcreport inotify上报日志信息
 func rpcreporti(event fsnotify.Event, filehash string, serverip string) {
-	client, _ := rpc.DialHTTP("tcp", serverip)
+	_Client, _ = rpc.Dial("udp", serverip)
 	var resp string
 	//上报内容
 	args := ReportEvent{AgentIP: geAgentIP(), FileName: event.Name, FileEvent: event.Op.String(), FileHash: filehash}
 
-	if nil == client {
+	if nil == _Client {
 		for {
-			if rpcReconnect(serverip,client) {
+			if rpcReconnect(serverip, _Client) {
 				break
 			}
 
 			time.Sleep(5000 * time.Millisecond)
 		}
 	}
-	client.Call(RPCReportEvent, args, &resp)
+	_Client.Call(RPCReportEvent, args, &resp)
+	_Client = nil
 }
 
 //rpcreport fanotify上报日志信息
 func rpcreportfan(FileName, FileEvent, filehash string, serverip string) {
-	client, _ := rpc.DialHTTP("tcp", serverip)
+	_Client, _ = rpc.Dial("udp", serverip)
 	var resp string
 	//上报内容
 	args := ReportEvent{AgentIP: geAgentIP(), FileName: FileName, FileEvent: FileEvent, FileHash: filehash}
 
-	if nil == client {
+	if nil == _Client {
 		for {
-			if rpcReconnect(serverip, client) {
+			if rpcReconnect(serverip, _Client) {
 				break
 			}
 
 			time.Sleep(5000 * time.Millisecond)
 		}
 	}
-	client.Call(RPCReportEvent, args, &resp)
+	_Client.Call(RPCReportEvent, args, &resp)
+	_Client = nil
 }
 
 // rpcReconnect 重新连接rpc服务端
-func rpcReconnect(serverip string, NewClient *rpc.Client) bool {
-	client, err := rpc.DialHTTP("tcp", serverip)
+func rpcReconnect(serverip string, _Client *rpc.Client) bool {
+	_Client, err := rpc.Dial("udp", serverip)
 	if err != nil {
 		log.Printf("ReDial RPC Server Error: %s", err)
 		return false
 	}
 
-	NewClient = client
 	log.Printf("ReDial RPC Server Sucess")
-
+	_Client = nil
 	return true
 }
 
