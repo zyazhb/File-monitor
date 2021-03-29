@@ -45,7 +45,7 @@ func Checkin(c *gin.Context) {
 //UserManager 用户管理器页面
 func UserManager(c *gin.Context) {
 	CheckLogin(c, true)
-	c.HTML(http.StatusOK, "usermanager.html", nil)
+	c.HTML(http.StatusOK, "usermanager.html", gin.H{"userdata": AllUserInfo()})
 }
 
 //UserManage 取得所有用户信息
@@ -116,7 +116,7 @@ func DelUser(c *gin.Context) {
 //AddUser 添加用户
 func AddUser(c *gin.Context) {
 	CheckLogin(c, true)
-	if CheckAdmin(c){
+	if CheckAdmin(c) {
 		role, _ := strconv.Atoi(c.PostForm("role"))
 		DbAddUser(c.PostForm("email"), c.PostForm("password"), role)
 	}
