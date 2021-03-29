@@ -37,7 +37,6 @@ func RPCDbInit() {
 //RPCDbSel 数据查询
 func RPCDbSel(page int) []RPCDb {
 	//连接数据库
-	db, err = gorm.Open(sqlite.Open("./report.db"), &gorm.Config{})
 	if err != nil {
 		panic(err)
 	}
@@ -52,7 +51,6 @@ func RPCDbSel(page int) []RPCDb {
 //RPCDbPageCount 计算总数
 func RPCDbPageCount() int64 {
 	//连接数据库
-	db, err = gorm.Open(sqlite.Open("./report.db"), &gorm.Config{})
 	if err != nil {
 		panic(err)
 	}
@@ -64,7 +62,6 @@ func RPCDbPageCount() int64 {
 //RPCDbDel 数据删除
 func RPCDbDel(rid string) {
 	//连接数据库
-	db, err = gorm.Open(sqlite.Open("./report.db"), &gorm.Config{})
 	if err != nil {
 		panic(err)
 	}
@@ -73,13 +70,10 @@ func RPCDbDel(rid string) {
 
 //RPCDbInsert RPC数据库插入数据
 func RPCDbInsert(agentip string, filename string, operation string, hash string) error {
-	db, err = gorm.Open(sqlite.Open("./report.db"), &gorm.Config{})
 	if err != nil {
 		panic(err)
 	}
-	sqlDB, _ := db.DB()
-	sqlDB.Close()
-	
+
 	var rpcdb RPCDb
 	db.Last(&rpcdb)
 	newid := rpcdb.RID + 1
