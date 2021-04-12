@@ -124,10 +124,11 @@ func AddUser(c *gin.Context) {
 
 //Register 注册页
 func Register(c *gin.Context) {
-	if CheckLogin(c, false) {
-		c.Redirect(http.StatusFound, "/")
+	if !CheckLogin(c, false) || CheckAdmin(c) {
+		c.HTML(http.StatusOK, "register.html", nil)
 	}
-	c.HTML(http.StatusOK, "register.html", nil)
+	c.Redirect(http.StatusFound, "/")
+
 }
 
 //RegisterForm 接收注册数据
