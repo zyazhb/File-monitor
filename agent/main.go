@@ -15,7 +15,6 @@ var (
 	f        string
 	dir      string
 	level    int
-	rpcflag  bool
 	hashflag bool
 	server   string
 	fan      bool
