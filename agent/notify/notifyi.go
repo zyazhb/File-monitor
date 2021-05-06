@@ -29,6 +29,7 @@ func RunInotify(filenames []string, hashflag bool, serverip string) {
 				var filehash string
 				if hashflag {
 					filehash = calcHash(event.Name) //计算hash
+					logger.Info("\033[1;32m [+]Hash: " + filehash + " \033[0m")
 				}
 				if serverip != "" {
 					go rpcreporti(event, filehash, serverip) //rpc上报
