@@ -63,7 +63,7 @@
                       "<td>" + data[index].FileName + "</td>" +
                       "<td>" + data[index].Operation + "</td>" +
                       "<td>" + data[index].Createtime + "</td>" +
-                      "<td>" + data[index].Hash + "</td>" +
+                      "<td><a href='https://www.virustotal.com/gui/file/" + data[index].Hash+ "/detection'>" + data[index].Hash + "</a></td>" +
                       "<td><a href='javascript:deleterpt(" + data[index].RID + ")'>Delete</a></td>" +
                       "</tr>");
                   })
