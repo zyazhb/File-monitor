@@ -38,7 +38,7 @@ func Checkin(c *gin.Context) {
 		SetSession(c, uid, email, role)
 		c.Redirect(http.StatusFound, "/manager")
 	} else {
-		c.Redirect(http.StatusFound, "/login")
+		c.HTML(http.StatusFound, "login.html", gin.H{"err": "Fail to login !", "errshow": "show"})
 	}
 }
 
