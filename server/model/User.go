@@ -139,12 +139,12 @@ func RegisterForm(c *gin.Context) {
 	if password == repassword {
 		err := DbAddUser(email, GenMD5(password), 999)
 		if err != nil {
-			c.Redirect(http.StatusFound, "/register")
+			c.HTML(http.StatusFound, "register.html", gin.H{"err": "User name already exist!", "errshow": "show"})
 		} else {
 			c.Redirect(http.StatusFound, "/login")
 		}
 	} else {
 		//留给js写弹窗 两次密码不匹配
-		c.Redirect(http.StatusFound, "/register")
+		c.HTML(http.StatusFound, "register.html", gin.H{"err": "Repeat password isn't match!", "errshow": "show"})
 	}
 }

@@ -2,13 +2,10 @@
 <html lang="en">
 
 <head>
+  <script src="/js/bootstrap.js"></script>
+  <link rel="stylesheet" href="/css/bootstrap.css">
   <meta charset="utf-8">
   <title>Register</title>
-
-  <!-- Bootstrap core CSS -->
-  <link rel="stylesheet" href="/css/bootstrap.css">
-  <!-- Favicons -->
-
   <style>
     .bd-placeholder-img {
       font-size: 1.125rem;
@@ -45,6 +42,11 @@
     </div>
     <button class="btn btn-lg btn-primary btn-block" type="submit" style="width:300px;margin:0 auto">Create
       account</button>
+    <div class="mb-3 alert alert-danger .alert-dismissible fade {{.errshow}}" id="err">
+      {{.err}}
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </div>
     <p class="mt-5 mb-3 text-muted">&copy; 2017-2021</p>
   </form>
 </body>
