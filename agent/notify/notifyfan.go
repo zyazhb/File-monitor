@@ -22,8 +22,8 @@ func RunFanotify(mountpoint string, hashflag bool, serverip string) {
 	}
 	//https://man7.org/linux/man-pages/man2/fanotify_mark.2.html 部分特性在kernel 5.0+才有效
 	if err = notify.Mark(
-		unix.FAN_MARK_ADD|unix.FAN_MARK_MOUNT,
-		unix.FAN_ACCESS|unix.FAN_MODIFY|unix.FAN_OPEN|unix.FAN_CLOSE,
+		unix.FAN_MARK_ADD|unix.FAN_MARK_ONLYDIR,
+		unix.FAN_ACCESS|unix.FAN_MODIFY|unix.FAN_OPEN|unix.FAN_CLOSE|unix.FAN_EVENT_ON_CHILD,
 		unix.AT_FDCWD,
 		mountpoint,
 	); err != nil {
@@ -71,7 +71,7 @@ func RealFanotify(notify *fanotify.NotifyFD) (string, int, string, error) {
 	case data.MatchMask(unix.FAN_ACCESS):
 		return "FAN_ACCESS", data.GetPID(), path, nil
 	case data.MatchMask(unix.FAN_OPEN):
-		return "Open", data.GetPID(), path, nil
+		return "FAN_OPEN", data.GetPID(), path, nil
 	case data.MatchMask(unix.FAN_ATTRIB):
 		return "FAN_ATTRIB", data.GetPID(), path, nil
 	case data.MatchMask(unix.FAN_CREATE):
