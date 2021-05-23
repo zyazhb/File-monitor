@@ -2,7 +2,7 @@ package main
 
 import (
 	"flag"
-	"io/ioutil"
+	"io"
 	"log"
 	"main/notify"
 
@@ -33,7 +33,7 @@ func init() {
 
 func main() {
 	flag.Parse()
-	logger.Init("LoggerExample", true, false, ioutil.Discard)
+	logger.Init("LoggerExample", true, false, io.Discard)
 	logger.SetFlags(log.LstdFlags)
 	logger.SetFlags(log.Llongfile)
 

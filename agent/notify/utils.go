@@ -4,7 +4,6 @@ import (
 	"crypto/sha256"
 	"encoding/hex"
 	"io"
-	"io/ioutil"
 	"net"
 	"os"
 
@@ -15,7 +14,7 @@ import (
 func GetAllFile(pathname string, level int) ([]string, error) {
 	filenames := []string{}
 
-	rd, err := ioutil.ReadDir(pathname)
+	rd, err := os.ReadDir(pathname)
 	if err != nil {
 		return filenames, err
 	}
