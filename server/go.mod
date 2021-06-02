@@ -1,6 +1,6 @@
 module main
 
-go 1.15
+go 1.16
 
 require (
 	github.com/gin-contrib/sessions v0.0.3
