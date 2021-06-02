@@ -2,7 +2,7 @@ package main
 
 import (
 	"main/model"
-	"net/http"
+	"main/static"
 
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-contrib/sessions/cookie"
@@ -22,11 +22,13 @@ func main() {
 
 	// 初始化Gin
 	router := gin.Default()
-	router.LoadHTMLGlob("static/templates/*")
-	router.StaticFS("/js", http.Dir("static/js"))
-	router.StaticFS("/css", http.Dir("static/css"))
-	router.StaticFS("/img", http.Dir("static/img"))
-	router.StaticFS("/include", http.Dir("static/include"))
+	// router.LoadHTMLGlob("static/templates/*")
+	// router.StaticFS("/js", http.Dir("static/js"))
+	// router.StaticFS("/css", http.Dir("static/css"))
+	// router.StaticFS("/img", http.Dir("static/img"))
+	// router.StaticFS("/include", http.Dir("static/include"))
+
+	static.InitFS(router)
 
 	router.GET("/rpc/:key", model.RPCHandler)
 	store := cookie.NewStore([]byte("loginuser"))
